@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/解决方案项/">
+    <File Path="gitignore" />
+  </Folder>
+  <Project Path="src/DeviceHub.Api/DeviceHub.Api.csproj" />
+  <Project Path="src/DeviceHub.Client/DeviceHub.Client.csproj" />
+  <Project Path="src/DeviceHub.Controls/DeviceHub.Controls.csproj" />
+  <Project Path="src/DeviceHub.Core/DeviceHub.Core.csproj" />
+  <Project Path="src/DeviceHub.Infrastructure/DeviceHub.Infrastructure.csproj" />
+  <Project Path="src/DeviceHub.Tests/DeviceHub.Tests.csproj" />
+</Solution>
