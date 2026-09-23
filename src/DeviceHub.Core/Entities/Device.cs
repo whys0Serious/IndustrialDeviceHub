@@ -43,5 +43,15 @@ namespace DeviceHub.Core.Entities
         /// 软删除
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string? Remark { get; set; }
+
+        /// <summary>
+        /// 软删除时间
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
     }
 }

@@ -29,5 +29,8 @@ namespace DeviceHub.Core.DTOs
         /// 所属分类主键
         /// </summary>
         public int CategoryId { get; set; }
+
+        /// <summary>备注</summary>
+        public string? Remark { get; set; }
     }
 }

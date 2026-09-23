@@ -47,5 +47,8 @@ namespace DeviceHub.Core.DTOs
 
         /// <summary>最后更新时间，可能为空</summary>
         public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>备注</summary>
+        public string? Remark { get; set; }
     }
 }

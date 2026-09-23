@@ -21,7 +21,7 @@ namespace DeviceHub.Core.Interfaces
         /// 按主键查询设备包含分类导航属性
         /// 找不到返回 null
         /// </summary>
-        Task<Device?> GetByIdDevice(int id, CancellationToken ct = default);
+        Task<Device?> GetDeviceById(int id, CancellationToken ct = default);
 
         /// <summary>
         /// 新增设备
