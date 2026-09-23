@@ -13,32 +13,32 @@ namespace DeviceHub.Core.Interfaces
         /// <summary>
         /// 查询所有分类按名称排序
         /// </summary>
-        Task<IReadOnlyList<DeviceCategory>> GetAllAsync(CancellationToken ct = default);
+        Task<IReadOnlyList<DeviceCategory>> GetAllCategory(CancellationToken ct = default);
 
         /// <summary>
         /// 按主键查询分类
         /// 找不到返回null
         /// </summary>
-        Task<DeviceCategory?> GetByIdAsync(int id, CancellationToken ct = default);
+        Task<DeviceCategory?> GetCategoryById(int id, CancellationToken ct = default);
 
         /// <summary>
         /// 新增分类
         /// </summary>
-        Task<DeviceCategory> AddAsync(DeviceCategory category, CancellationToken ct = default);
+        Task<DeviceCategory> AddCategory(DeviceCategory category, CancellationToken ct = default);
 
         /// <summary>
         /// 更新分类
         /// </summary>
-        Task UpdateAsync(DeviceCategory category, CancellationToken ct = default);
+        Task UpdateCategory(DeviceCategory category, CancellationToken ct = default);
 
         /// <summary>
         /// 按主键删除分类
         /// </summary>
-        Task DeleteAsync(int id, CancellationToken ct = default);
+        Task DeleteCategory(int id, CancellationToken ct = default);
 
         /// <summary>
         /// 判断分类下是否有设备
         /// </summary>
-        Task<bool> HasDevicesAsync(int categoryId, CancellationToken ct = default);
+        Task<bool> IsHasDevices(int categoryId, CancellationToken ct = default);
     }
 }
