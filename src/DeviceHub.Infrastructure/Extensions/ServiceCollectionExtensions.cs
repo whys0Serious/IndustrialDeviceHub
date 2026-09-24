@@ -1,7 +1,9 @@
 ﻿using DeviceHub.Core.Interfaces;
 using DeviceHub.Infrastructure.Data;
 using DeviceHub.Infrastructure.Repositories;
+using DeviceHub.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,26 +19,30 @@ namespace DeviceHub.Infrastructure.Extensions
     {
         /// <summary>
         /// 注册 Core层服务
-        ///  Modbus、AI等服务也在这里注册
         /// </summary>
         public static IServiceCollection AddCoreServices(this IServiceCollection services)
         {
-            services.AddScoped<IDeviceRepository, DeviceRepository>();
-            services.AddScoped<IDeviceCategoryRepository, DeviceCategoryRepository>();
             return services;
         }
 
-        /// <summary>
-        /// 注册Infrastructure 层
-        /// 包含EFCoreDbContext连接字符串由调用方传入
-        /// WPF与Api传各自的连接字符串，但注册逻辑一致
-        /// </summary>
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            string connectionString)
+              this IServiceCollection services,
+              IConfiguration configuration)
         {
+            // EFCore
+            var connStr = configuration.GetConnectionString("Default")
+                ?? throw new InvalidOperationException("缺少连接字符串Default");
+
             services.AddDbContext<DeviceHubDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connStr));
+
+            // Repository
+            services.AddScoped<IDeviceRepository, DeviceRepository>();
+            services.AddScoped<IDeviceCategoryRepository, DeviceCategoryRepository>();
+
+            // Service
+            services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<IDeviceCategoryService, DeviceCategoryService>();
 
             return services;
         }

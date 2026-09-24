@@ -31,24 +31,39 @@ namespace DeviceHub.Core.DTOs
         public DeviceStatus Status { get; set; }
 
         /// <summary>
+        /// 设备状态枚举转换
+        /// </summary>
+        public string StatusText => Status switch
+        {
+            DeviceStatus.Stopped => "已停止",
+            DeviceStatus.Running => "运行中",
+            DeviceStatus.Alarm => "报警",
+            _ => "未知"
+        };
+
+        /// <summary>
         /// 所属分类主键
         /// </summary>
         public int CategoryId { get; set; }
 
         /// <summary>
         /// 所属分类名称
-        /// 实体里是 DeviceCategory导航属性，这里只取 Name
-        /// 避免 UI 直接拿到实体、也避免循环引用
         /// </summary>
         public string? CategoryName { get; set; }
 
-        /// <summary>创建时间</summary>
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         public DateTime CreatedAt { get; set; }
 
-        /// <summary>最后更新时间，可能为空</summary>
+        /// <summary>
+        /// 最后更新时间可能为空
+        /// </summary>
         public DateTime? UpdatedAt { get; set; }
 
-        /// <summary>备注</summary>
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string? Remark { get; set; }
     }
 }

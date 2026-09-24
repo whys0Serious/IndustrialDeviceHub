@@ -37,11 +37,5 @@ namespace DeviceHub.Core.Common
                 _ => value
             };
         }
-
-        /// <summary>
-        /// 关键字可选
-        /// 用于名称/编码模糊搜索
-        /// </summary>
-        public string? Keyword { get; set; }
     }
 }

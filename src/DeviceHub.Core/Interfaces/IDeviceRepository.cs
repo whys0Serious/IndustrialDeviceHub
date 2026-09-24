@@ -1,5 +1,6 @@
 ﻿using DeviceHub.Core.Common;
 using DeviceHub.Core.Entities;
+using DeviceHub.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,35 +13,42 @@ namespace DeviceHub.Core.Interfaces
     public interface IDeviceRepository
     {
         /// <summary>
-        /// 分页查询设备
-        /// 支持关键字模糊匹配 Name / Code。
+        /// 分页查询设备（含分类导航属性）
+        /// 支持关键字模糊匹配 Name/Code可按状态、分类筛选
         /// </summary>
-        Task<PagedResult<Device>> GetPagedDevice(PagedRequest request, CancellationToken ct = default);
+        Task<(IReadOnlyList<Device> Items, int TotalCount)> GetPagedAsync(
+            string? keyword,
+            DeviceStatus? status,
+            int? categoryId,
+            int page,
+            int pageSize,
+            CancellationToken ct = default);
 
         /// <summary>
-        /// 按主键查询设备包含分类导航属性
-        /// 找不到返回 null
+        /// 按主键查询设备（含分类导航属性）
         /// </summary>
-        Task<Device?> GetDeviceById(int id, CancellationToken ct = default);
+        Task<Device?> GetByIdAsync(int id, CancellationToken ct = default);
 
         /// <summary>
         /// 新增设备
         /// </summary>
-        Task<Device> AddDevice(Device device, CancellationToken ct = default);
+        Task<Device> AddAsync(Device device, CancellationToken ct = default);
 
         /// <summary>
         /// 更新设备
         /// </summary>
-        Task UpdateDevice(Device device, CancellationToken ct = default);
+        Task UpdateAsync(Device device, CancellationToken ct = default);
 
         /// <summary>
-        /// 按主键删除设备
+        /// 删除设备（软删除，设置 IsDeleted = true）
         /// </summary>
-        Task DeleteDevice(int id, CancellationToken ct = default);
+        Task DeleteAsync(int id, CancellationToken ct = default);
 
         /// <summary>
-        /// 判断设备编码是否已存在
+        /// 判断设备编号是否已存在（用于唯一性校验）
         /// </summary>
-        Task<bool> CodeExistsDevice(string code, int? excludeId = null, CancellationToken ct = default);
+        /// <param name="code">设备编号</param>
+        /// <param name="excludeId">排除的Id</param>
+        Task<bool> CodeExistsAsync(string code, int? excludeId = null, CancellationToken ct = default);
     }
 }

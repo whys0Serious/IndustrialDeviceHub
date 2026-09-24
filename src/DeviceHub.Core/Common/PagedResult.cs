@@ -21,9 +21,9 @@ namespace DeviceHub.Core.Common
         public int TotalCount { get; set; }
 
         /// <summary>
-        /// 当前页码
+        /// 当前页码（从1开始）
         /// </summary>
-        public int PageIndex { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// 每页条数
@@ -33,16 +33,16 @@ namespace DeviceHub.Core.Common
         /// <summary>
         /// 总页数
         /// </summary>
-        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
+        public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling(TotalCount / (double)PageSize);
 
         /// <summary>
         /// 是否有上一页
         /// </summary>
-        public bool HasPrevious => PageIndex > 1;
+        public bool HasPrevious => Page > 1;
 
         /// <summary>
         /// 是否有下一页
         /// </summary>
-        public bool HasNext => PageIndex < TotalPages;
+        public bool HasNext => Page < TotalPages;
     }
 }

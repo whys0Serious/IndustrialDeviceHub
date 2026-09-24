@@ -1,17 +1,27 @@
 ﻿using DeviceHub.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Core + Infrastructure（与 WPF 共用）
+builder.Services.AddCoreServices();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+//Api
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 复用 Core / Infrastructure 的 DI 扩展方法
-var conn = builder.Configuration.GetConnectionString("Default")!;
-builder.Services.AddInfrastructure(conn);
-builder.Services.AddCoreServices();
-
 var app = builder.Build();
+
+//中间件
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
