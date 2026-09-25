@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DeviceHub.Client.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +17,11 @@ namespace DeviceHub.Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainWindowViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
+            Loaded += (_, _) => viewModel.Initialize();
         }
     }
 }

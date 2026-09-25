@@ -4,9 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviceHub.Client"
+        xmlns:controls="clr-namespace:DeviceHub.Client.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Style="{StaticResource BaseWindowStyle}"
+        Title="MainWindow" Height="690" Width="1200">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <controls:TitleBarControl Grid.Row="0" Grid.ColumnSpan="2"
+                            WindowTitle="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                            ShowMaximize="False">
+            <!--自定义的模板中设置了左右两侧可进行增加控件操作-->
+            <controls:TitleBarControl.LeftContent>
+                <Image Source="/Assets/Icons/papirus.png"  Width="20" Height="20" Stretch="Uniform"/>
+            </controls:TitleBarControl.LeftContent>
+        </controls:TitleBarControl>
+        <!-- 左侧菜单 -->
+        <Border Grid.Column="0" Grid.Row="1" Background="{DynamicResource TitleBarBackgroundBrush}">
+            <StackPanel Margin="10">
+                <TextBlock Text="设备中枢" FontSize="20" FontWeight="Bold"
+                           Foreground="White" Margin="0,20,0,30" HorizontalAlignment="Center"/>
+                <!--加新页面 -->
+                <Button Content="设备管理" Height="40" Margin="0,5"
+                        Background="#34495E" Foreground="White" BorderThickness="0"
+                        Cursor="Hand"
+                        Command="{Binding NavigateToDeviceListCommand}"/>
+            </StackPanel>
+        </Border>
 
+        <!--右侧根据 CurrentViewModel自动找DataTemplate-->
+        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

@@ -2,13 +2,20 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DeviceHub.Client"
-             StartupUri="MainWindow.xaml">
+             xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
+             xmlns:views="clr-namespace:DeviceHub.Client.Views">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- ViewModel→View 映射 加新页面在这里加一行-->
+            <DataTemplate DataType="{x:Type vm:DeviceListViewModel}">
+                <views:DeviceListView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
