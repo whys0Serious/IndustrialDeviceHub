@@ -1,4 +1,5 @@
-﻿using DeviceHub.Client.ViewModels;
+﻿using DeviceHub.Client.Controls;
+using DeviceHub.Client.ViewModels;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +16,7 @@ namespace DeviceHub.Client
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : CustomWindow
     {
         public MainWindow(MainWindowViewModel viewModel)
         {

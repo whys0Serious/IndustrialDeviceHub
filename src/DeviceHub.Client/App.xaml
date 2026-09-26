@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:DeviceHub.Client"
              xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
              xmlns:views="clr-namespace:DeviceHub.Client.Views"
-             xmlns:conv="clr-namespace:DeviceHub.Client.Converters">
+             xmlns:conv="clr-namespace:DeviceHub.Client.Converters"
+             ShutdownMode="OnMainWindowClose">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,6 +13,8 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
                 <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="/Themes/LightBrushes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- 转换器 -->
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>

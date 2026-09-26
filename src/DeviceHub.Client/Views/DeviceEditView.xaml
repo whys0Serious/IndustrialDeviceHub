@@ -1,0 +1,78 @@
+﻿<controls:CustomWindow x:Class="DeviceHub.Client.Views.DeviceEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeviceHub.Client.Views"
+        xmlns:controls="clr-namespace:DeviceHub.Client.Controls"
+        mc:Ignorable="d"
+        Title="DeviceEditView"
+        Width="500"
+        Height="450">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 表单 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="设备名称 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" VerticalContentAlignment="Center" Margin="0,0,0,15"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="设备编号 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" VerticalContentAlignment="Center" Margin="0,0,0,15"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="状态 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
+            <ComboBox Grid.Row="2" Grid.Column="1"
+                      ItemsSource="{Binding StatusOptions}"
+                      SelectedItem="{Binding SelectedStatus}"
+                      DisplayMemberPath="Display"
+                      Height="30" Margin="0,0,0,15"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="分类 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
+            <ComboBox Grid.Row="3" Grid.Column="1"
+                      ItemsSource="{Binding CategoryOptions}"
+                      SelectedItem="{Binding SelectedCategory}"
+                      DisplayMemberPath="Name"
+                      Height="30" Margin="0,0,0,15"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="备注" VerticalAlignment="Top" Margin="0,5,10,15"/>
+            <TextBox Grid.Row="4" Grid.Column="1"
+                     Text="{Binding Remark, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     VerticalAlignment="Top"
+                     Height="100" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+            <TextBlock Grid.Row="5" Grid.ColumnSpan="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding ErrorMessage}"
+                       Foreground="Red" TextWrapping="Wrap"/>
+        </Grid>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,5">
+            <Button Content="保存" Command="{Binding SaveCommand}"
+                    Width="90" Height="32" Margin="0,0,10,0" IsDefault="True"/>
+            <Button Content="取消" Command="{Binding CancelCommand}"
+                    Width="90" Height="32" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</controls:CustomWindow>

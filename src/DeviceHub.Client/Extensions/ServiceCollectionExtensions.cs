@@ -23,8 +23,9 @@ namespace DeviceHub.Client.Extensions
             services.AddCoreServices();
             services.AddInfrastructure(configuration);
 
-            //导航
+            //导航、弹出框
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IDialogService, DialogService>();
 
             //自动注册ViewModel和View
             services.AddViewModelsFromAssembly(assembly);

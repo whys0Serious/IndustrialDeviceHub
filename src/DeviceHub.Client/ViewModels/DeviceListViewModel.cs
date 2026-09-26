@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
 using DeviceHub.Client.Models;
+using DeviceHub.Client.Services;
+using DeviceHub.Client.Views;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +17,8 @@ namespace DeviceHub.Client.ViewModels
         private readonly IDeviceService _deviceService;
         private readonly IDeviceCategoryService _categoryService;
 
-        
+        private readonly IDialogService _dialogService;
+
         /// <summary>
         /// 统计设备状态
         /// </summary>
@@ -31,10 +34,11 @@ namespace DeviceHub.Client.ViewModels
         [ObservableProperty]
         private int _stoppedCount;
 
-        public DeviceListViewModel(IDeviceService deviceService, IDeviceCategoryService categoryService)
+        public DeviceListViewModel(IDeviceService deviceService, IDeviceCategoryService categoryService, IDialogService dialogService)
         {
             _deviceService = deviceService;
             _categoryService = categoryService;
+            _dialogService = dialogService;
 
             StatusOptions = DeviceStatusOption.AllOptions;
             SelectedStatus = DeviceStatusOption.All;
@@ -65,7 +69,7 @@ namespace DeviceHub.Client.ViewModels
         private int _currentPageIndex = 1;
 
         [ObservableProperty]
-        private int _pageSize = 20;
+        private int _pageSize = 10;
 
         [ObservableProperty]
         private int _totalPages;
@@ -83,6 +87,17 @@ namespace DeviceHub.Client.ViewModels
         [ObservableProperty]
         private string? _errorMessage;
 
+        /// <summary>
+        /// 当前选中的设备
+        /// </summary>
+        [ObservableProperty]
+        private DeviceDto? _selectedDevice;
+        /// <summary>
+        /// 编辑条件判断
+        /// </summary>
+        /// <returns></returns>
+        private bool CanEdit() => SelectedDevice != null;
+
         public bool HasData => Devices.Count > 0;
 
         /// <summary>
@@ -90,6 +105,8 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
 
         public ObservableCollection<DeviceDto> Devices { get; } = new();
+
+
 
         /// <summary>
         /// 初始化
@@ -143,9 +160,35 @@ namespace DeviceHub.Client.ViewModels
         }
 
         /// <summary>
-        /// 内部方法
+        /// 新增设备
         /// </summary>
-        /// <returns></returns>
+        [RelayCommand]
+        private async Task CreateAsync()
+        {
+            _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
+                vm => _ = vm.InitializeAsync(null));
+
+            // 不管取消还是保存，都刷新
+            await LoadStatisticsAsync();
+            await LoadPageAsync();
+        }
+
+        /// <summary>编辑选中的设备</summary>
+        [RelayCommand(CanExecute = nameof(CanEdit))]
+        private async Task EditAsync()
+        {
+            if (SelectedDevice == null) return;
+
+            var id = SelectedDevice.Id;
+            _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
+                vm => _ = vm.InitializeAsync(id));
+
+            await LoadStatisticsAsync();
+            await LoadPageAsync();
+        }
+
+
+        //-------内部方法------
 
         private async Task LoadCategoriesAsync()
         {
@@ -217,6 +260,11 @@ namespace DeviceHub.Client.ViewModels
                 //统计失败不影响主流程
                 System.Diagnostics.Debug.WriteLine($"统计加载失败：{ex.Message}");
             }
+        }
+
+        partial void OnSelectedDeviceChanged(DeviceDto? value)
+        {
+            EditCommand.NotifyCanExecuteChanged();
         }
     }
 

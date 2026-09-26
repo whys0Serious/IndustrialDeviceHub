@@ -3,7 +3,7 @@
                     xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework">
     <!-- Bool → Visibility 转换器（也可以用内置 BooleanToVisibilityConverter） -->
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-    <!--标头按钮样式-->
+    <!--窗口头按钮样式-->
     <Style x:Key="CaptionButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -49,29 +49,14 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="bg" Property="Background"
-                             Value="{DynamicResource CloseButtonHoverBrush}"/>
+                             Value="{DynamicResource DangerBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="bg" Property="Background"
-                             Value="{DynamicResource CaptionButtonPressedBrush}"/>
+                             Value="{DynamicResource DangerDarkBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <!--无边框自定义窗口-->
-    <Style x:Key="BaseWindowStyle" TargetType="Window">
-        <Setter Property="WindowStyle" Value="None"/>
-        <Setter Property="ResizeMode" Value="NoResize"/>
-        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource WindowForegroundBrush}"/>
-        <Setter Property="shell:WindowChrome.WindowChrome">
-            <Setter.Value>
-                <shell:WindowChrome CaptionHeight="32"
-                                    ResizeBorderThickness="0"
-                                    GlassFrameThickness="0"
-                                    UseAeroCaptionButtons="False"/>
             </Setter.Value>
         </Setter>
     </Style>
