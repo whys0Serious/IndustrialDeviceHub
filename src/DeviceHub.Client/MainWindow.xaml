@@ -7,7 +7,8 @@
         xmlns:controls="clr-namespace:DeviceHub.Client.Controls"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="MainWindow" Height="690" Width="1200">
+        Title="MainWindow" Height="690" Width="1200"
+        xmlns:hc="https://handyorg.github.io/handycontrol">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -41,5 +42,40 @@
 
         <!--右侧根据 CurrentViewModel自动找DataTemplate-->
         <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentViewModel}"/>
+        <!-- 全局状态栏 -->
+        <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#2C3E50">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!--服务状态区（M3填 Modbus，M6 填 AI）-->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- 占位：M3 加 Modbus 状态，M6 加 AI 状态 -->
+                </StackPanel>
+
+                <!-- 后台任务区（M4 填导入进度等） -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- 占位-->
+                    <!-- 
+                    <TextBlock Text="正在导入知识库..." Foreground="White" FontSize="12"/>
+                    <ProgressBar Value="45" Width="100" Height="10" Margin="10,0"/>
+                    -->
+                </StackPanel>
+
+                <!-- 版本+时间 -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0 8 0 10">
+                    <TextBlock Text="{Binding ShortVersion, Mode=OneWay}"
+                               ToolTip="{Binding FullVersion, Mode=OneWay}"
+                               Foreground="#95A5A6" FontSize="12" Margin="0,0,20,0"
+                               Cursor="Help"/>
+                    <TextBlock Text="{Binding CurrentTime, Mode=OneWay}"
+                               Foreground="White" FontSize="12" Margin="0 0 10 0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

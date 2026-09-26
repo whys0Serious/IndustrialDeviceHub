@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/解决方案项/">
+    <File Path="Directory.Build.props" />
     <File Path="gitignore" />
   </Folder>
   <Project Path="src/DeviceHub.Api/DeviceHub.Api.csproj" />

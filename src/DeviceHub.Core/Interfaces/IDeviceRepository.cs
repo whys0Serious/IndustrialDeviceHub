@@ -50,5 +50,10 @@ namespace DeviceHub.Core.Interfaces
         /// <param name="code">设备编号</param>
         /// <param name="excludeId">排除的Id</param>
         Task<bool> CodeExistsAsync(string code, int? excludeId = null, CancellationToken ct = default);
+        /// <summary>
+        /// 按状态统计设备数量
+        /// 返回(运行中,报警,停止)
+        /// </summary>
+        Task<(int Running, int Alarm, int Stopped)> GetStatusStatisticsAsync(CancellationToken ct = default);
     }
 }

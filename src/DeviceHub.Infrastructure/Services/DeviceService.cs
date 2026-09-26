@@ -124,5 +124,18 @@ namespace DeviceHub.Infrastructure.Services
                 UpdatedAt = device.UpdatedAt
             };
         }
+
+        public async Task<DeviceStatisticsDto> GetStatisticsAsync(CancellationToken ct = default)
+        {
+            var (running, alarm, stopped) = await _repo.GetStatusStatisticsAsync(ct);
+
+            return new DeviceStatisticsDto
+            {
+                TotalCount = running + alarm + stopped,
+                RunningCount = running,
+                AlarmCount = alarm,
+                StoppedCount = stopped
+            };
+        }
     }
 }

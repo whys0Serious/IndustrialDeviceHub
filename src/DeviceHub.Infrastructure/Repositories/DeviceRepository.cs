@@ -106,5 +106,21 @@ namespace DeviceHub.Infrastructure.Repositories
 
             return await query.AnyAsync(ct);
         }
+
+        public async Task<(int Running, int Alarm, int Stopped)> GetStatusStatisticsAsync(CancellationToken ct = default)
+        {
+            //全局查询过滤器会自动排除IsDeleted = true的记录
+            var stats = await _db.Devices
+                .AsNoTracking()
+                .GroupBy(d => d.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync(ct);
+
+            return (
+                stats.FirstOrDefault(s => s.Status == DeviceStatus.Running)?.Count ?? 0,
+                stats.FirstOrDefault(s => s.Status == DeviceStatus.Alarm)?.Count ?? 0,
+                stats.FirstOrDefault(s => s.Status == DeviceStatus.Stopped)?.Count ?? 0
+            );
+        }
     }
 }

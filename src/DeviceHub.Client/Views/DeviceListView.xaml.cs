@@ -25,11 +25,11 @@ namespace DeviceHub.Client.Views
         {
             InitializeComponent();
             // DataContext由父ContentControl 自动传入（CurrentViewModel）
-            DataContextChanged += (_, e) =>
+            DataContextChanged += async (_, e) =>
             {
-                if (DataContext is DeviceListViewModel vm)
+                if (e.NewValue is DeviceListViewModel vm)
                 {
-                    _ = vm.LoadAsync();
+                    await vm.InitializeAsync();
                 }
             };
         }

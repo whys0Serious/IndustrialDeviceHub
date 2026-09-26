@@ -55,5 +55,10 @@ namespace DeviceHub.Core.Interfaces
         /// <param name="ct"></param>
         /// <returns></returns>
         Task<bool> CodeExistsAsync(string code, int? excludeId = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// 获取设备状态统计
+        /// </summary>
+        Task<DeviceStatisticsDto> GetStatisticsAsync(CancellationToken ct = default);
     }
 }

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DeviceHub.Client"
              xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
-             xmlns:views="clr-namespace:DeviceHub.Client.Views">
+             xmlns:views="clr-namespace:DeviceHub.Client.Views"
+             xmlns:conv="clr-namespace:DeviceHub.Client.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,6 +13,8 @@
                 <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- 转换器 -->
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <!-- ViewModel→View 映射 加新页面在这里加一行-->
             <DataTemplate DataType="{x:Type vm:DeviceListViewModel}">
                 <views:DeviceListView/>
