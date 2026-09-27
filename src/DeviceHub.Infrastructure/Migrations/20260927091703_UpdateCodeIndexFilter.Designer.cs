@@ -4,6 +4,7 @@ using DeviceHub.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeviceHub.Infrastructure.Migrations
 {
     [DbContext(typeof(DeviceHubDbContext))]
-    partial class DeviceHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260927091703_UpdateCodeIndexFilter")]
+    partial class UpdateCodeIndexFilter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

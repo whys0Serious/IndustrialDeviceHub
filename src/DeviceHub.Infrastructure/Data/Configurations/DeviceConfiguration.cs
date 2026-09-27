@@ -34,6 +34,7 @@ namespace DeviceHub.Infrastructure.Data.Configurations
 
             builder.HasIndex(d => d.Code)
                 .IsUnique()
+                .HasFilter("[IsDeleted] = 0")//只对未删除的记录唯一
                 .HasDatabaseName("IX_Devices_Code");
 
             builder.HasOne(d => d.Category)
