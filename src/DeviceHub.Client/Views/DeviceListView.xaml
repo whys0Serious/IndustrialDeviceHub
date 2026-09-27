@@ -23,11 +23,11 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <!-- 搜索框-->
-                    <ColumnDefinition Width="1.8*" MinWidth="200"/>
+                    <ColumnDefinition Width="1.1*" MinWidth="200"/>
                     <!-- 状态-->
-                    <ColumnDefinition Width="1.0*" MinWidth="100"/>
+                    <ColumnDefinition Width="0.6*" MinWidth="100"/>
                     <!-- 分类-->
-                    <ColumnDefinition Width="1.2*" MinWidth="120"/>
+                    <ColumnDefinition Width="0.8*" MinWidth="120"/>
                     <!-- 重置按钮-->
                     <ColumnDefinition Width="Auto"/>
                     <!-- 右侧按钮组-->
@@ -75,12 +75,11 @@
                       DisplayMemberPath="Name"
                       VerticalAlignment="Center"/>
                 </Grid>
-
                 <!-- 重置按钮 -->
                 <Button Grid.Column="3"
                 Content="刷新"
                 Command="{Binding ResetCommand}"
-                MinWidth="80" Height="30" Margin="0,0,10,0"
+                MinWidth="80" Height="30" Margin="0,0,5,0"
                 VerticalAlignment="Center"
                 BorderThickness="1"
                 Background="{DynamicResource SurfaceBrush}"
@@ -94,12 +93,17 @@
                             Foreground="{DynamicResource SidebarTextBrush}"
                             MinWidth="80" Height="30" Margin="0,0,5,0"
                             />
-                    <Button Content="✎ 编辑" Command="{Binding EditCommand}"
-                    MinWidth="80" Height="30"
-                    Background="{DynamicResource SurfaceBrush}"
-                    Foreground="{DynamicResource PrimaryBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"/>
+                            <Button Content="✎ 编辑" Command="{Binding EditCommand}"
+                            MinWidth="80" Height="30"
+                            Background="{DynamicResource SurfaceBrush}"
+                            Foreground="{DynamicResource PrimaryBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1" Margin="0 0 5 0"/>
+                            <Button Content="🗑 删除" Command="{Binding DeleteCommand}"
+                            MinWidth="80" Height="30"
+                            Foreground="{DynamicResource DangerBrush}"
+                            BorderBrush="{DynamicResource DangerBrush}"
+                            BorderThickness="1"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -141,18 +145,34 @@
                        AutoGenerateColumns="False"
                        IsReadOnly="True"
                        CanUserAddRows="False"
+                       CanUserResizeColumns="False" 
                        RowHeight="35"
                        Background="{DynamicResource SurfaceBrush}"
                       BorderBrush="{DynamicResource BorderLightBrush}"
                       BorderThickness="1">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserResize="False"/>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
                         <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="200"/>
                         <DataGridTextColumn Header="设备编号" Binding="{Binding Code}" Width="150"/>
-                        <DataGridTextColumn Header="状态" Binding="{Binding StatusText}" Width="100" CanUserResize="False"/>
+                        <DataGridTextColumn Header="状态" Binding="{Binding StatusText}" Width="100" />
                         <DataGridTextColumn Header="分类" Binding="{Binding CategoryName}" Width="150"/>
-                        <DataGridTextColumn Header="备注" Binding="{Binding Remark}" Width="*" CanUserSort="False"/>
-                        <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm}" Width="150" CanUserResize="False"/>
+                        <DataGridTemplateColumn Header="备注" Width="*" CanUserSort="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Remark}"
+                                       TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center"
+                                       Margin="4,0">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Remark}"
+                                           TextWrapping="Wrap"
+                                           MaxWidth="200"/>
+                                        </TextBlock.ToolTip>
+                                     </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm}" Width="150"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <!--分页-->

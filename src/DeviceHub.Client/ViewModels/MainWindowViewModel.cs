@@ -32,6 +32,11 @@ namespace DeviceHub.Client.ViewModels
             // 读版本号
             LoadVersion();
         }
+        /// <summary>
+        /// 启动时默认导航到设备管理
+        /// </summary>
+        public void Initialize()
+            => _navigation.NavigateTo<DeviceListViewModel>();
 
         /// <summary>
         /// 当前显示的ViewMode（ContentControl 绑定它）
@@ -39,15 +44,15 @@ namespace DeviceHub.Client.ViewModels
         public ObservableObject? CurrentViewModel => _navigation.CurrentViewModel;
 
         /// <summary>
-        /// 导航到设备管理
+        /// 通用导航 参数是ViewModel类型
         /// </summary>
+        /// <param name="viewModelType"></param>
         [RelayCommand]
-        private void NavigateToDeviceList() => _navigation.NavigateTo<DeviceListViewModel>();
-
-        /// <summary>
-        /// 启动时默认导航到设备管理
-        /// </summary>
-        public void Initialize() => _navigation.NavigateTo<DeviceListViewModel>();
+        private void Navigate(Type? viewModelType)
+        {
+            if (viewModelType == null) return;
+            _navigation.NavigateTo(viewModelType);
+        }
 
         /// <summary>
         /// 软件版本号（从程序集读）

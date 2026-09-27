@@ -15,12 +15,16 @@
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/Generic.xaml"/>
                 <ResourceDictionary Source="/Themes/LightBrushes.xaml"/>
+                <ResourceDictionary Source="/Themes/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- 转换器 -->
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
             <!-- ViewModel→View 映射 加新页面在这里加一行-->
             <DataTemplate DataType="{x:Type vm:DeviceListViewModel}">
                 <views:DeviceListView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DeviceCategoryListViewModel}">
+                <views:DeviceCategoryListView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

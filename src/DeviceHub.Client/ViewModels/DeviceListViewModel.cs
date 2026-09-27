@@ -19,6 +19,7 @@ namespace DeviceHub.Client.ViewModels
 
         private readonly IDialogService _dialogService;
 
+        private bool _isInitializing = true;//保护状态
         /// <summary>
         /// 统计设备状态
         /// </summary>
@@ -106,8 +107,6 @@ namespace DeviceHub.Client.ViewModels
 
         public ObservableCollection<DeviceDto> Devices { get; } = new();
 
-
-
         /// <summary>
         /// 初始化
         /// </summary>
@@ -115,13 +114,12 @@ namespace DeviceHub.Client.ViewModels
 
         public async Task InitializeAsync()
         {
+            _isInitializing = true;   // 开始初始化
             await LoadCategoriesAsync();
             await LoadStatisticsAsync();
             await LoadPageAsync();
+            _isInitializing = false;  // 初始化完成
         }
-
-
-        //-----界面命令-----
        
         /// <summary>
         /// 搜索（重置到第 1 页）
@@ -130,7 +128,7 @@ namespace DeviceHub.Client.ViewModels
         private async Task SearchAsync()
         {
             CurrentPageIndex = 1;
-            await LoadStatisticsAsync();//数据变化了 统计要刷新
+            //await LoadStatisticsAsync();//数据变化了 统计要刷新
             await LoadPageAsync();
         }
 
@@ -165,30 +163,74 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task CreateAsync()
         {
-            _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
+            var result = _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
                 vm => _ = vm.InitializeAsync(null));
 
-            // 不管取消还是保存，都刷新
-            await LoadStatisticsAsync();
-            await LoadPageAsync();
+            if (result == true)
+            {
+                await LoadStatisticsAsync();
+                await LoadPageAsync();
+                _dialogService.ShowSuccess("设备创建成功");
+            }
         }
 
-        /// <summary>编辑选中的设备</summary>
+        /// <summary>
+        /// 编辑选中的设备
+        /// </summary>
         [RelayCommand(CanExecute = nameof(CanEdit))]
         private async Task EditAsync()
         {
             if (SelectedDevice == null) return;
 
             var id = SelectedDevice.Id;
-            _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
+            var result = _dialogService.ShowDialog<DeviceEditViewModel, DeviceEditView>(
                 vm => _ = vm.InitializeAsync(id));
-
-            await LoadStatisticsAsync();
-            await LoadPageAsync();
+            if (result == true)
+            {
+                await LoadStatisticsAsync();
+                await LoadPageAsync();
+                _dialogService.ShowSuccess("设备编辑成功");
+            }
+            
         }
 
+        /// <summary>
+        /// 删除选中设备
+        /// </summary>
+        /// <returns></returns>
+        [RelayCommand(CanExecute = nameof(CanEdit))]
+        private async Task DeleteAsync()
+        {
+            if (SelectedDevice == null) return;
 
-        //-------内部方法------
+            // 先保存名字和Id
+            var deviceName = SelectedDevice.Name;
+            var deviceCode = SelectedDevice.Code;
+            var deviceId = SelectedDevice.Id;
+
+            var confirmed = _dialogService.Confirm(
+                $"确定要删除设备「{deviceName}」（{deviceCode}）吗？\n\n删除后可在数据库中恢复。",
+                "删除确认");
+
+            if (!confirmed) return;
+
+            try
+            {
+                await _deviceService.DeleteAsync(deviceId);
+                await LoadStatisticsAsync();
+                await LoadPageAsync();
+
+                _dialogService.ShowSuccess($"设备「{deviceName}」已删除");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _dialogService.ShowWarning(ex.Message, "无法删除");
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowError($"删除失败：{ex.Message}", "错误");
+            }
+        }
 
         private async Task LoadCategoriesAsync()
         {
@@ -261,10 +303,33 @@ namespace DeviceHub.Client.ViewModels
                 System.Diagnostics.Debug.WriteLine($"统计加载失败：{ex.Message}");
             }
         }
-
+        /// <summary>
+        /// 通知命令
+        /// </summary>
+        /// <param name="value"></param>
         partial void OnSelectedDeviceChanged(DeviceDto? value)
         {
             EditCommand.NotifyCanExecuteChanged();
+            DeleteCommand.NotifyCanExecuteChanged();
+        }
+
+        /// <summary>
+        /// 状态变化时自动搜索
+        /// </summary>
+        partial void OnSelectedStatusChanged(DeviceStatusOption? value)
+        {
+            //防止初始化时触发（CategoryOptions 还没加载）
+            if (_isInitializing) return;
+            _ = SearchAsync();;
+        }
+
+        /// <summary>
+        /// 分类变化时自动搜索
+        /// </summary>
+        partial void OnSelectedCategoryChanged(DeviceCategoryDto? value)
+        {
+            if (_isInitializing) return;
+            _ = SearchAsync();
         }
     }
 

@@ -24,7 +24,7 @@ namespace DeviceHub.Client.Controls
             AllowsTransparency = false;
             // 默认：不可调整大小（对话框行为）
             ResizeMode = ResizeMode.NoResize;
-
+            SetResourceReference(BackgroundProperty, "BackgroundBrush");
             var chrome = new WindowChrome
             {
                 CaptionHeight = 32,
@@ -34,6 +34,53 @@ namespace DeviceHub.Client.Controls
                 UseAeroCaptionButtons = false
             };
             WindowChrome.SetWindowChrome(this, chrome);
+            //订阅DataContext的IDialogAware
+            DataContextChanged += OnDataContextChanged;
+            Closed += OnWindowClosed;
+        }
+
+
+        // ---------- 关闭事件 ----------
+        private IDialogAware? _dialogAware;
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //取消旧订阅
+            if (_dialogAware != null)
+            {
+                _dialogAware.RequestClose -= OnRequestClose;
+                _dialogAware = null;
+            }
+
+            // 新DataContext实现IDialogAware时订阅
+            if (e.NewValue is IDialogAware aware)
+            {
+                _dialogAware = aware;
+                _dialogAware.RequestClose += OnRequestClose;
+            }
+        }
+
+        private void OnWindowClosed(object? sender, EventArgs e)
+        {
+            if (_dialogAware != null)
+            {
+                _dialogAware.RequestClose -= OnRequestClose;
+                _dialogAware = null;
+            }
+        }
+
+        private void OnRequestClose(bool result)
+        {
+            // 主窗口直接 Close
+            try
+            {
+                DialogResult = result;
+            }
+            catch
+            {
+                //非对话框场景忽略
+                Close();
+            }
         }
 
         // ---------- 标题栏按钮显隐 ----------

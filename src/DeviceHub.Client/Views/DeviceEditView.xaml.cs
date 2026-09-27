@@ -23,26 +23,6 @@ namespace DeviceHub.Client.Views
         {
             InitializeComponent();
 
-            DataContextChanged += (_, e) =>
-            {
-                if (e.NewValue is DeviceEditViewModel vm)
-                {
-                    vm.RequestClose += OnRequestClose;
-                }
-            };
-
-            Closed += (_, _) =>
-            {
-                if (DataContext is DeviceEditViewModel vm)
-                {
-                    vm.RequestClose -= OnRequestClose;
-                }
-            };
-        }
-
-        private void OnRequestClose(bool result)
-        {
-            DialogResult = result;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DeviceHub.Client.Extensions;
+﻿using DeviceHub.Client.Controls;
+using DeviceHub.Client.Extensions;
 using DeviceHub.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ public partial class App : Application
 
     public App()
     {
+        GlobalExceptionHandler.Register();//注册全局异常处理
+
         _host = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration(cfg =>
             {

@@ -15,8 +15,13 @@ namespace DeviceHub.Client.Services
         ObservableObject? CurrentViewModel { get; }
 
         /// <summary>
-        /// 按ViewModel类型导航
+        /// 按ViewModel类型导航（泛型版，类型安全）
         /// </summary>
         void NavigateTo<TViewModel>() where TViewModel : ObservableObject;
+
+        /// <summary>
+        /// 按ViewModel类型导航
+        /// </summary>
+        void NavigateTo(Type viewModelType);
     }
 }

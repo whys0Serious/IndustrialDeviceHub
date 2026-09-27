@@ -1,7 +1,10 @@
 <Solution>
+  <Folder Name="/docker/" />
+  <Folder Name="/docs/" />
   <Folder Name="/解决方案项/">
     <File Path="Directory.Build.props" />
     <File Path="gitignore" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="src/DeviceHub.Api/DeviceHub.Api.csproj" />
   <Project Path="src/DeviceHub.Client/DeviceHub.Client.csproj" />

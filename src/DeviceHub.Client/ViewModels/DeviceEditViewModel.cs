@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
+using DeviceHub.Client.Controls;
 using DeviceHub.Client.Models;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
@@ -13,7 +14,7 @@ using System.Text;
 namespace DeviceHub.Client.ViewModels
 {
     [ViewModel(ServiceLifetime.Transient)]
-    public partial class DeviceEditViewModel : ObservableObject
+    public partial class DeviceEditViewModel : ObservableObject, IDialogAware
     {
         private readonly IDeviceService _deviceService;
         private readonly IDeviceCategoryService _categoryService;
@@ -27,8 +28,6 @@ namespace DeviceHub.Client.ViewModels
                 .Where(o => o.Value != (Core.Enums.DeviceStatus)(-1))
                 .ToList();
         }
-
-        //---------- 请求关闭事件----------
 
         /// <summary>
         /// 请求关闭对话框
@@ -45,7 +44,6 @@ namespace DeviceHub.Client.ViewModels
         [ObservableProperty]
         private string _title = "新增设备";
 
-        // ---------- 表单字段 ----------
 
         [ObservableProperty]
         private string _name = string.Empty;
@@ -66,15 +64,12 @@ namespace DeviceHub.Client.ViewModels
 
         public ObservableCollection<DeviceCategoryDto> CategoryOptions { get; } = new();
 
-        // ---------- 状态 ----------
 
         [ObservableProperty]
         private bool _isSaving;
 
         [ObservableProperty]
         private string? _errorMessage;
-
-        // ---------- 初始化 ----------
 
         public async Task InitializeAsync(int? deviceId)
         {
@@ -95,7 +90,6 @@ namespace DeviceHub.Client.ViewModels
             }
         }
 
-        // ---------- 命令 ----------
 
         /// <summary>
         /// 保存设备信息
@@ -139,10 +133,6 @@ namespace DeviceHub.Client.ViewModels
 
                 RequestClose?.Invoke(true);
             }
-            catch (Exception ex)
-            {
-                ErrorMessage = ex.Message;
-            }
             finally
             {
                 IsSaving = false;
@@ -153,12 +143,8 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
 
         [RelayCommand]
-        private void Cancel()
-        {
-            RequestClose?.Invoke(false);
-        }
+        private void Cancel() => RequestClose?.Invoke(false);
 
-        // ---------- 内部方法 ----------
         /// <summary>
         /// 加载全部分类
         /// </summary>

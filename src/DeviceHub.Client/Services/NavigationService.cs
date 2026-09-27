@@ -20,8 +20,16 @@ namespace DeviceHub.Client.Services
         }
 
         public void NavigateTo<TViewModel>() where TViewModel : ObservableObject
+        => NavigateTo(typeof(TViewModel));
+
+        public void NavigateTo(Type viewModelType)
         {
-            var vm = _services.GetRequiredService<TViewModel>();
+            if (!typeof(ObservableObject).IsAssignableFrom(viewModelType))
+                throw new ArgumentException(
+                    $"{viewModelType.FullName} 必须继承 ObservableObject",
+                    nameof(viewModelType));
+
+            var vm = (ObservableObject)_services.GetRequiredService(viewModelType);
             CurrentViewModel = vm;
         }
     }

@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviceHub.Client"
         xmlns:controls="clr-namespace:DeviceHub.Client.Controls"
+        xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1200"
+        x:Name="MainWindowRoot"
+        Height="700" Width="1200"
         Background="{DynamicResource BackgroundBrush}"
         xmlns:hc="https://handyorg.github.io/handycontrol">
     <Grid>
@@ -25,11 +27,20 @@
                            Foreground="{DynamicResource SidebarTextBrush}"
                            Margin="0,20,0,30" HorizontalAlignment="Center"/>
                 <!--加新页面 -->
-                <Button Content="设备管理" Height="40" Margin="0,5"
-                         Background="{DynamicResource SidebarItemActiveBrush}"
-                         Foreground="{DynamicResource SidebarTextBrush}" BorderThickness="0"
-                        Cursor="Hand"
-                        Command="{Binding NavigateToDeviceListCommand}"/>
+                <RadioButton Content="设备管理"
+                 GroupName="MainMenu"
+                 IsChecked="True"
+                 Height="40" Margin="0,5"
+                 Style="{StaticResource SidebarRadioButtonStyle}"
+                 Command="{Binding NavigateCommand}"
+                 CommandParameter="{x:Type vm:DeviceListViewModel}"/>
+
+                <RadioButton Content="分类管理"
+                 GroupName="MainMenu"
+                 Height="40" Margin="0,5"
+                 Style="{StaticResource SidebarRadioButtonStyle}"
+                 Command="{Binding NavigateCommand}"
+                 CommandParameter="{x:Type vm:DeviceCategoryListViewModel}"/>
             </StackPanel>
         </Border>
 

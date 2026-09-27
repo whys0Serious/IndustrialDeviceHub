@@ -13,6 +13,8 @@ namespace DeviceHub.Tests.Services
     public class DeviceServiceTests
     {
         private readonly Mock<IDeviceRepository> _repoMock;
+
+        private readonly Mock<IDeviceCategoryRepository> _categoryMock;
         private readonly Mock<ILogger<DeviceService>> _loggerMock;
         private readonly DeviceService _service;
 
@@ -20,7 +22,8 @@ namespace DeviceHub.Tests.Services
         {
             _repoMock = new Mock<IDeviceRepository>();
             _loggerMock = new Mock<ILogger<DeviceService>>();
-            _service = new DeviceService(_repoMock.Object, _loggerMock.Object);
+            _categoryMock = new Mock<IDeviceCategoryRepository>();
+            _service = new DeviceService(_repoMock.Object, _loggerMock.Object,_categoryMock.Object);
         }
         /// <summary>
         /// 新增设备信息，返回新ID
