@@ -1,5 +1,6 @@
 ﻿using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Entities;
+using DeviceHub.Core.Exceptions;
 using DeviceHub.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -38,7 +39,7 @@ namespace DeviceHub.Infrastructure.Services
         {
             if (await _repo.NameExistsAsync(request.Name, null, ct))
             {
-                throw new InvalidOperationException($"分类名 {request.Name} 已存在");
+                throw new BusinessException($"分类名 {request.Name} 已存在");
             }
 
             var category = new DeviceCategory
@@ -57,11 +58,11 @@ namespace DeviceHub.Infrastructure.Services
         public async Task UpdateAsync(int id, UpdateDeviceCategoryDto request, CancellationToken ct = default)
         {
             var category = await _repo.GetByIdAsync(id, ct)
-                ?? throw new InvalidOperationException($"分类 {id} 不存在");
+                ?? throw new BusinessException($"分类 {id} 不存在");
 
             if (await _repo.NameExistsAsync(request.Name, id, ct))
             {
-                throw new InvalidOperationException($"分类名 {request.Name} 已被使用");
+                throw new BusinessException($"分类名 {request.Name} 已被使用");
             }
 
             category.Name = request.Name.Trim();
@@ -75,12 +76,12 @@ namespace DeviceHub.Infrastructure.Services
         public async Task DeleteAsync(int id, CancellationToken ct = default)
         {
             var category = await _repo.GetByIdAsync(id, ct)
-                ?? throw new InvalidOperationException($"分类 {id} 不存在");
+                ?? throw new BusinessException($"分类 {id} 不存在");
 
             //分类下有设备时禁止删除
             if (await _repo.HasDevicesAsync(id, ct))
             {
-                throw new InvalidOperationException($"分类 {category.Name} 下还有设备，不能删除");
+                throw new BusinessException($"分类 {category.Name} 下还有设备，不能删除");
             }
 
             await _repo.DeleteAsync(id, ct);

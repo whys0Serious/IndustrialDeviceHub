@@ -1,11 +1,10 @@
 ﻿using DeviceHub.Core.Common;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Entities;
+using DeviceHub.Core.Exceptions;
 using DeviceHub.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DeviceHub.Infrastructure.Services
 {
@@ -15,12 +14,14 @@ namespace DeviceHub.Infrastructure.Services
     public class DeviceService : IDeviceService
     {
         private readonly IDeviceRepository _repo;
+        private readonly IDeviceCategoryRepository _categoryRepo;
         private readonly ILogger<DeviceService> _logger;
 
-        public DeviceService(IDeviceRepository repo, ILogger<DeviceService> logger)
+        public DeviceService(IDeviceRepository repo, ILogger<DeviceService> logger, IDeviceCategoryRepository categoryRepo)
         {
             _repo = repo;
             _logger = logger;
+            _categoryRepo = categoryRepo;
         }
 
         public async Task<PagedResult<DeviceDto>> GetPagedAsync(DeviceQueryDto query, CancellationToken ct = default)
@@ -49,12 +50,16 @@ namespace DeviceHub.Infrastructure.Services
         }
 
         public async Task<int> CreateAsync(CreateDeviceDto request, CancellationToken ct = default)
-        {
+        {   //编号唯一
             if (await _repo.CodeExistsAsync(request.Code, null, ct))
-            {
-                throw new InvalidOperationException($"设备编号 {request.Code} 已存在");
-            }
+                throw new BusinessException($"设备编号「{request.Code}」已存在");
 
+            //分类存在
+            var category = await _categoryRepo.GetByIdAsync(request.CategoryId, ct);
+            if (category == null)
+                throw new BusinessException($"分类 {request.CategoryId} 不存在，请先在分类管理中创建");
+
+            //构造实体
             var device = new Device
             {
                 Name = request.Name.Trim(),
@@ -65,21 +70,35 @@ namespace DeviceHub.Infrastructure.Services
                 CreatedAt = DateTime.Now
             };
 
-            var saved = await _repo.AddAsync(device, ct);
+            //保存
+            try
+            {
+                var saved = await _repo.AddAsync(device, ct);
+                _logger.LogInformation("设备创建成功：Id={Id}, Code={Code}", saved.Id, saved.Code);
+                return saved.Id;
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, "设备创建失败：{Message}", innerMessage);
 
-            _logger.LogInformation("设备创建成功：Id={Id}, Code={Code}", saved.Id, saved.Code);
+                if (innerMessage.Contains("IX_Devices_Code"))
+                    throw new BusinessException($"设备编号「{request.Code}」已存在");
+                if (innerMessage.Contains("FK_Devices_DeviceCategories"))
+                    throw new BusinessException("分类不存在或已被删除");
 
-            return saved.Id;
+                throw;//其他数据库异常往上抛 全局异常兜底
+            }
         }
 
         public async Task UpdateAsync(int id, UpdateDeviceDto request, CancellationToken ct = default)
         {
             var device = await _repo.GetByIdAsync(id, ct)
-                ?? throw new InvalidOperationException($"设备 {id} 不存在");
+                ?? throw new BusinessException($"设备 {id} 不存在");
 
             if (await _repo.CodeExistsAsync(request.Code, id, ct))
             {
-                throw new InvalidOperationException($"设备编号 {request.Code} 已被其他设备使用");
+                throw new BusinessException($"设备编号 {request.Code} 已被其他设备使用");
             }
 
             device.Name = request.Name.Trim();
@@ -89,15 +108,27 @@ namespace DeviceHub.Infrastructure.Services
             device.Remark = request.Remark?.Trim();
             device.UpdatedAt = DateTime.Now;
 
-            await _repo.UpdateAsync(device, ct);
+            try
+            {
+                await _repo.UpdateAsync(device, ct);
+                _logger.LogInformation("设备更新成功：Id={Id}", id);
+            }
+            catch (DbUpdateException ex)
+            {
+                var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, "设备更新失败：{Message}", innerMessage);
 
-            _logger.LogInformation("设备更新成功：Id={Id}", id);
+                if (innerMessage.Contains("IX_Devices_Code"))
+                    throw new BusinessException($"设备编号「{request.Code}」已存在");
+
+                throw;
+            }
         }
 
         public async Task DeleteAsync(int id, CancellationToken ct = default)
         {
             var device = await _repo.GetByIdAsync(id, ct)
-                ?? throw new InvalidOperationException($"设备 {id} 不存在");
+                ?? throw new BusinessException($"设备 {id} 不存在");
 
             await _repo.DeleteAsync(id, ct);
 
