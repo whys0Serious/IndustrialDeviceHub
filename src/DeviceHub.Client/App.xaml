@@ -26,6 +26,9 @@
             <DataTemplate DataType="{x:Type vm:DeviceCategoryListViewModel}">
                 <views:DeviceCategoryListView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RealtimeMonitorViewModel}">
+                <views:RealtimeMonitorView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
