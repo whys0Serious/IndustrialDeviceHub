@@ -36,25 +36,29 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddDbContext<DeviceHubDbContext>(options =>
                 options.UseSqlServer(connStr));
 
-            // Repository
+            //Repository
             services.AddScoped<IDeviceRepository, DeviceRepository>();
             services.AddScoped<IDeviceCategoryRepository, DeviceCategoryRepository>();
+            services.AddScoped<IAlarmRepository, AlarmRepository>();
 
             // Service
-            services.AddScoped<IDeviceService, DeviceService>();
-            services.AddScoped<IDeviceCategoryService, DeviceCategoryService>();
+            services.AddScoped<IDeviceService, DeviceService>();//设备信息服务
+            services.AddScoped<IDeviceCategoryService, DeviceCategoryService>();//设备分类服务
+            services.AddScoped<IRealtimeDataService, RealtimeDataService>();//实时数据服务
+            services.AddScoped<IAlarmService, AlarmService>();//报警服务
 
             // 通信
             services.AddSingleton<IDeviceCommunication, ModbusDeviceCommunication>();
 
             // Modbus 配置
             services.Configure<ModbusOptions>(configuration.GetSection(ModbusOptions.SectionName));
+            // 报警阈值配置
+            services.Configure<AlarmOptions>(configuration.GetSection(AlarmOptions.SectionName));
 
             // 实时数据缓存（单例，线程安全）
             services.AddSingleton<IRealtimeDataCache, RealtimeDataCache>();
-
-            // 实时数据服务
-            services.AddScoped<IRealtimeDataService, RealtimeDataService>();
+            // 报警状态跟踪
+            services.AddSingleton<AlarmTracker>();
 
             // Modbus 后台轮询
             services.AddHostedService<ModbusPollingService>();

@@ -32,6 +32,11 @@ namespace DeviceHub.Infrastructure.Data
         public DbSet<DeviceCategory> DeviceCategories => Set<DeviceCategory>();
 
         /// <summary>
+        /// 警报记录表
+        /// </summary>
+        public DbSet<Alarm> Alarms => Set<Alarm>();
+
+        /// <summary>
         /// 模型创建时调用
         /// ApplyConfigurationsFromAssembly会自动扫描当前程序集所有实现了IEntityTypeConfiguration的类
         /// 新增实体配置不用改 DbContext

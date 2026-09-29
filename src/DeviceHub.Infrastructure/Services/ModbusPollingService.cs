@@ -1,6 +1,8 @@
 ﻿using DeviceHub.Core.DTOs;
+using DeviceHub.Core.Enums;
 using DeviceHub.Core.Interfaces;
 using DeviceHub.Core.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,17 +21,27 @@ namespace DeviceHub.Infrastructure.Services
         private readonly IRealtimeDataCache _cache;
         private readonly ModbusOptions _options;
         private readonly ILogger<ModbusPollingService> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly AlarmOptions _alarmOptions;
+        private readonly AlarmTracker _alarmTracker;
+
 
         public ModbusPollingService(
             IDeviceCommunication communication,
             IRealtimeDataCache cache,
             IOptions<ModbusOptions> options,
-            ILogger<ModbusPollingService> logger)
+            ILogger<ModbusPollingService> logger,
+            IServiceScopeFactory scopeFactory,
+            IOptions<AlarmOptions> alarmOptions,
+            AlarmTracker alarmTracker)
         {
             _communication = communication;
             _cache = cache;
             _options = options.Value;
             _logger = logger;
+            _scopeFactory = scopeFactory;
+            _alarmOptions = alarmOptions.Value;
+            _alarmTracker = alarmTracker;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -134,8 +146,71 @@ namespace DeviceHub.Infrastructure.Services
 
             _cache.Update(data.DeviceId, data);
 
+            //状态变化触发报警
+            await CheckAlarmsAsync(data, ct);
+
             _logger.LogTrace("采集：温度={Temp}℃, 压力={Press}kPa, 转速={Speed}RPM",
                 data.Temperature, data.Pressure, data.Speed);
+        }
+
+        private async Task CheckAlarmsAsync(RealtimeDataDto data, CancellationToken ct)
+        {
+            try
+            {
+                // 温度过高
+                await CheckOneAsync(
+                    data, AlarmType.TemperatureHigh,
+                    data.Temperature > _alarmOptions.TemperatureMax,
+                    data.Temperature, _alarmOptions.TemperatureMax,
+                    $"温度过高：当前 {data.Temperature:F1}℃，超过上限 {_alarmOptions.TemperatureMax:F1}℃",
+                    ct);
+
+                // 压力过高
+                await CheckOneAsync(
+                    data, AlarmType.PressureHigh,
+                    data.Pressure > _alarmOptions.PressureMax,
+                    data.Pressure, _alarmOptions.PressureMax,
+                    $"压力过高：当前 {data.Pressure:F0}kPa，超过上限 {_alarmOptions.PressureMax:F0}kPa",
+                    ct);
+
+                // 转速过低
+                await CheckOneAsync(
+                    data, AlarmType.SpeedLow,
+                    data.Speed < _alarmOptions.SpeedMin,
+                    data.Speed, _alarmOptions.SpeedMin,
+                    $"转速过低：当前 {data.Speed}RPM，低于下限 {_alarmOptions.SpeedMin:F0}RPM",
+                    ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "报警判断异常");
+            }
+        }
+        private async Task CheckOneAsync(
+              RealtimeDataDto data, AlarmType type,
+              bool isActive, double currentValue, double threshold, string message,
+              CancellationToken ct)
+        {
+            var (triggered, resolved) = _alarmTracker.Update(data.DeviceId, type, isActive);
+
+            if (!triggered && !resolved)
+                return;   //无状态变化跳过
+
+            using var scope = _scopeFactory.CreateScope();
+            var alarmService = scope.ServiceProvider.GetRequiredService<IAlarmService>();
+
+            if (triggered)
+            {
+                //首次触发 写新报警
+                await alarmService.CreateAsync(
+                    data.DeviceId, type, message,
+                    currentValue, threshold, ct);
+            }
+            else if (resolved)
+            {
+                //恢复 更新报警记录
+                await alarmService.ResolveAsync(data.DeviceId, type, ct);
+            }
         }
     }
 }
