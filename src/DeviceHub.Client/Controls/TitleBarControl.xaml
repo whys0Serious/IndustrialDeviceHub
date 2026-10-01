@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
             x:Name="Root"
-            Height="32">    
-    <Border Background="{DynamicResource TitleBarBackgroundBrush}">
+            Height="32">
+    <Border Background="{DynamicResource SidebarBackgroundBrush}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

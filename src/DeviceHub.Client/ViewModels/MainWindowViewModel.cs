@@ -14,9 +14,12 @@ namespace DeviceHub.Client.ViewModels
         private readonly INavigationService _navigation;
         private readonly DispatcherTimer _timer;
 
-        public MainWindowViewModel(INavigationService navigation)
+        public AlarmBannerViewModel AlarmBanner { get; }
+
+        public MainWindowViewModel(INavigationService navigation, AlarmBannerViewModel alarmBanner)
         {
             _navigation = navigation;
+            AlarmBanner = alarmBanner;
 
             // 把NavigationService的属性变化转发到CurrentViewModel
             _navigation.PropertyChanged += (_, e) =>

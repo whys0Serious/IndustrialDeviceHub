@@ -38,4 +38,9 @@
     <!-- 标题栏 -->
     <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="{StaticResource TitleBarBackgroundColor}"/>
     <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="{StaticResource TitleBarForegroundColor}"/>
+    
+    <!--报警横幅-->
+    <SolidColorBrush x:Key="AlarmBannerBrush" Color="{StaticResource AlarmBannerColor}"/>
+    <SolidColorBrush x:Key="AlarmBannerTextBrush" Color="{StaticResource AlarmBannerTextColor}"/>
+    <SolidColorBrush x:Key="AlarmBannerNormalBrush" Color="{StaticResource AlarmBannerNormalColor}"/>
 </ResourceDictionary>

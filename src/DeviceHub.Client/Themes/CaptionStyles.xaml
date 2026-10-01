@@ -7,7 +7,7 @@
     <Style x:Key="CaptionButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="{DynamicResource TitleBarForegroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BorderLightBrush}"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="Template">
@@ -20,11 +20,11 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="bg" Property="Background"
-                                    Value="{DynamicResource CaptionButtonHoverBrush}"/>
+                                    Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="bg" Property="Background"
-                                    Value="{DynamicResource CaptionButtonPressedBrush}"/>
+                                    Value="{DynamicResource DarkPrimaryBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -35,7 +35,7 @@
     <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="{DynamicResource TitleBarForegroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BorderLightBrush}"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="Cursor" Value="Arrow"/>

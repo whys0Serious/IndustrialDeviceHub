@@ -34,4 +34,9 @@
     <!-- 标题栏 -->
     <Color x:Key="TitleBarBackgroundColor">#FFFFFF</Color>
     <Color x:Key="TitleBarForegroundColor">#1F1F1F</Color>
+    
+    <!--报警横幅-->
+    <Color x:Key="AlarmBannerColor">#FAAD14</Color>
+    <Color x:Key="AlarmBannerTextColor">#874D00</Color>
+    <Color x:Key="AlarmBannerNormalColor">#B7EB8F</Color>
 </ResourceDictionary>

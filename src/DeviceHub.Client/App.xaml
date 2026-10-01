@@ -13,8 +13,9 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
                 <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
-                <ResourceDictionary Source="/Themes/Generic.xaml"/>
                 <ResourceDictionary Source="/Themes/LightBrushes.xaml"/>
+                <ResourceDictionary Source="/Themes/Generic.xaml"/>
+                
                 <ResourceDictionary Source="/Themes/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- 转换器 -->
@@ -28,6 +29,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:RealtimeMonitorViewModel}">
                 <views:RealtimeMonitorView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AlarmListViewModel}">
+                <views:AlarmListView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
