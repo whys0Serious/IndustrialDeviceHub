@@ -35,7 +35,14 @@ namespace DeviceHub.Infrastructure.Data
         /// 警报记录表
         /// </summary>
         public DbSet<Alarm> Alarms => Set<Alarm>();
-
+        /// <summary>
+        /// 工单表
+        /// </summary>
+        public DbSet<WorkOrder> WorkOrders => Set<WorkOrder>();
+        /// <summary>
+        /// 工单日志表
+        /// </summary>
+        public DbSet<WorkOrderLog> WorkOrderLogs => Set<WorkOrderLog>();
         /// <summary>
         /// 模型创建时调用
         /// ApplyConfigurationsFromAssembly会自动扫描当前程序集所有实现了IEntityTypeConfiguration的类

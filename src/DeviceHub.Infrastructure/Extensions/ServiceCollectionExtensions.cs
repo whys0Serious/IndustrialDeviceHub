@@ -40,12 +40,14 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IDeviceRepository, DeviceRepository>();
             services.AddScoped<IDeviceCategoryRepository, DeviceCategoryRepository>();
             services.AddScoped<IAlarmRepository, AlarmRepository>();
+            services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 
             // Service
             services.AddScoped<IDeviceService, DeviceService>();//设备信息服务
             services.AddScoped<IDeviceCategoryService, DeviceCategoryService>();//设备分类服务
             services.AddScoped<IRealtimeDataService, RealtimeDataService>();//实时数据服务
             services.AddScoped<IAlarmService, AlarmService>();//报警服务
+            services.AddScoped<IWorkOrderService, WorkOrderService>();//工单服务
 
             // 通信
             services.AddSingleton<IDeviceCommunication, ModbusDeviceCommunication>();
