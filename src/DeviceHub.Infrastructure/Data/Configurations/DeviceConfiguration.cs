@@ -32,6 +32,11 @@ namespace DeviceHub.Infrastructure.Data.Configurations
                 .HasConversion<int>()
                 .IsRequired();
 
+            builder.Property(d => d.ModbusSlaveId);
+            builder.Property(d => d.ModbusStartAddress);
+            builder.Property(d => d.ModbusRegisterCount);
+            builder.Property(d => d.EnableMonitoring);
+
             builder.HasIndex(d => d.Code)
                 .IsUnique()
                 .HasFilter("[IsDeleted] = 0")//只对未删除的记录唯一
@@ -43,6 +48,8 @@ namespace DeviceHub.Infrastructure.Data.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasQueryFilter(d => !d.IsDeleted);
+
+            
         }
     }
 }

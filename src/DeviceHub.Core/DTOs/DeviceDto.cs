@@ -65,5 +65,21 @@ namespace DeviceHub.Core.DTOs
         /// 备注
         /// </summary>
         public string? Remark { get; set; }
+        /// <summary>
+        /// 寄存器从站ID
+        /// </summary>
+        public byte? ModbusSlaveId { get; set; }
+        /// <summary>
+        /// 寄存器起始地址
+        /// </summary>
+        public ushort? ModbusStartAddress { get; set; }
+        /// <summary>
+        /// 寄存器数量
+        /// </summary>
+        public ushort? ModbusRegisterCount { get; set; }
+        /// <summary>
+        /// 是否启用监控
+        /// </summary>
+        public bool EnableMonitoring { get; set; }
     }
 }

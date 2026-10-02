@@ -67,7 +67,11 @@ namespace DeviceHub.Infrastructure.Services
                 Status = request.Status,
                 CategoryId = request.CategoryId,
                 Remark = request.Remark?.Trim(),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                ModbusSlaveId= request.ModbusSlaveId,
+                ModbusStartAddress = request.ModbusStartAddress,
+                ModbusRegisterCount = request.ModbusRegisterCount,
+                EnableMonitoring = request.EnableMonitoring
             };
 
             //保存
@@ -107,6 +111,10 @@ namespace DeviceHub.Infrastructure.Services
             device.CategoryId = request.CategoryId;
             device.Remark = request.Remark?.Trim();
             device.UpdatedAt = DateTime.Now;
+            device.EnableMonitoring=request.EnableMonitoring;
+            device.ModbusSlaveId = request.ModbusSlaveId;
+            device.ModbusStartAddress = request.ModbusStartAddress;
+            device.ModbusRegisterCount = request.ModbusRegisterCount;
 
             try
             {
@@ -152,7 +160,11 @@ namespace DeviceHub.Infrastructure.Services
                 CategoryName = device.Category?.Name,
                 Remark = device.Remark,
                 CreatedAt = device.CreatedAt,
-                UpdatedAt = device.UpdatedAt
+                UpdatedAt = device.UpdatedAt,
+                ModbusSlaveId = device.ModbusSlaveId,
+                ModbusStartAddress = device.ModbusStartAddress,
+                ModbusRegisterCount = device.ModbusRegisterCount,
+                EnableMonitoring = device.EnableMonitoring
             };
         }
 

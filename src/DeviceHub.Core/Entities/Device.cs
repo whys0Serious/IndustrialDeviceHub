@@ -53,5 +53,26 @@ namespace DeviceHub.Core.Entities
         /// 软删除时间
         /// </summary>
         public DateTime? DeletedAt { get; set; }
+
+
+        /// <summary>
+        /// Modbus从站ID（0-247）
+        /// </summary>
+        public byte? ModbusSlaveId { get; set; }
+
+        /// <summary>
+        /// Modbus起始寄存器地址
+        /// </summary>
+        public ushort? ModbusStartAddress { get; set; }
+
+        /// <summary>
+        /// Modbus寄存器数量
+        /// </summary>
+        public ushort? ModbusRegisterCount { get; set; }
+
+        /// <summary>
+        /// 是否启用实时监控
+        /// </summary>
+        public bool EnableMonitoring { get; set; } = false;
     }
 }
