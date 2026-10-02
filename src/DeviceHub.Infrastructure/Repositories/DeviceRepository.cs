@@ -122,5 +122,13 @@ namespace DeviceHub.Infrastructure.Repositories
                 stats.FirstOrDefault(s => s.Status == DeviceStatus.Stopped)?.Count ?? 0
             );
         }
+
+        public async Task<IReadOnlyList<Device>> GetMonitoredDevicesAsync(CancellationToken ct = default)
+        {
+            return await _db.Devices
+                .AsNoTracking()
+                .Where(d => d.EnableMonitoring && d.ModbusSlaveId != null)
+                .ToListAsync(ct);
+        }
     }
 }

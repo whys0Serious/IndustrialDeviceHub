@@ -55,5 +55,10 @@ namespace DeviceHub.Core.Interfaces
         /// 返回(运行中,报警,停止)
         /// </summary>
         Task<(int Running, int Alarm, int Stopped)> GetStatusStatisticsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// 获取所有启用实时监控的设备
+        /// </summary>
+        Task<IReadOnlyList<Device>> GetMonitoredDevicesAsync(CancellationToken ct = default);
     }
 }

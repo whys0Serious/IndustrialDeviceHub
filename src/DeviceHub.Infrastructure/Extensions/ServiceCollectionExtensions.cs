@@ -1,5 +1,6 @@
 ﻿using DeviceHub.Core.Interfaces;
 using DeviceHub.Core.Models;
+using DeviceHub.Infrastructure.BackgroundServices;
 using DeviceHub.Infrastructure.Caching;
 using DeviceHub.Infrastructure.Communication;
 using DeviceHub.Infrastructure.Data;

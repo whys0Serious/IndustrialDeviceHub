@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceHub.Client.Attributes;
+using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
+using DeviceHub.Infrastructure.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
@@ -19,6 +21,8 @@ namespace DeviceHub.Client.ViewModels
     public partial class RealtimeMonitorViewModel : ObservableObject, IDisposable
     {
         private readonly IRealtimeDataService _realtimeService;
+
+        private readonly IDeviceService _deviceService;
         private readonly DispatcherTimer _timer;
 
         /// <summary>
@@ -26,14 +30,23 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
         private const int MaxPoints = 60;
 
-        /// <summary>
-        /// 虚拟设备 Id（M3 单设备）
-        /// </summary>
-        private const int DeviceId = 1;
 
-        public RealtimeMonitorViewModel(IRealtimeDataService realtimeService)
+        //当前选中的设备
+        [ObservableProperty]
+        private DeviceDto? _selectedDevice;
+
+        public ObservableCollection<DeviceDto> DeviceOptions { get; } = new();
+
+        //初始化加载启用监控的设备
+        public async Task InitializeAsync()
+        {
+            await LoadDevicesAsync();
+            _timer.Start();
+        }
+        public RealtimeMonitorViewModel(IRealtimeDataService realtimeService, IDeviceService deviceService)
         {
             _realtimeService = realtimeService;
+            _deviceService = deviceService;
             //压力曲线
             PressureValues = new ObservableCollection<DateTimePoint>();
             PressureSeries = new ISeries[]
@@ -190,32 +203,74 @@ namespace DeviceHub.Client.ViewModels
             _timer.Stop();
         }
 
+        //设备切换时清空曲线
+        partial void OnSelectedDeviceChanged(DeviceDto? value)
+        {
+            ClearCharts();
+        }
+
+
+          private async Task LoadDevicesAsync()
+    {
+        try
+        {
+            var result = await _deviceService.GetPagedAsync(new DeviceQueryDto
+            {
+                Page = 1,
+                PageSize = 200,
+                // 可选：只显示启用监控的
+            });
+
+            DeviceOptions.Clear();
+            foreach (var d in result.Items)
+            {
+                // 只加启用监控的设备
+                if (d.EnableMonitoring)
+                    DeviceOptions.Add(d);
+            }
+
+            SelectedDevice = DeviceOptions.FirstOrDefault();
+        }
+        catch{
+
+        }
+    }
+
+        private void ClearCharts()
+        {
+            PressureValues.Clear();
+            SpeedValues.Clear();
+            Temperature = 0;
+            CurrentPressure = 0;
+            CurrentSpeed = 0;
+            LastUpdateTime = null;
+        }
+
         /// <summary>
         ///定时刷新
         /// </summary>
 
         private void Refresh()
         {
-            var data = _realtimeService.GetLatest(DeviceId);
-
-            if (data == null)
+            if (SelectedDevice == null)
             {
-                IsConnected = _realtimeService.IsConnected;
+                IsConnected = false;
                 return;
             }
-
+           
+            var data = _realtimeService.GetLatest(SelectedDevice.Id);
             IsConnected = _realtimeService.IsConnected;
 
-            // 温度
-            Temperature = data.Temperature;
+            if (data == null) return;
 
-            // 压力
+            Temperature = data.Temperature;
             CurrentPressure = data.Pressure;
+            CurrentSpeed = data.Speed;
+
             PressureValues.Add(new DateTimePoint(data.Timestamp, data.Pressure));
             TrimOldPoints(PressureValues);
 
-            // 转速
-            CurrentSpeed = data.Speed;
+
             SpeedValues.Add(new DateTimePoint(data.Timestamp, data.Speed));
             TrimOldPoints(SpeedValues);
 

@@ -22,11 +22,11 @@ namespace DeviceHub.Client.Views
         public RealtimeMonitorView()
         {
             InitializeComponent();
-            DataContextChanged += (_, e) =>
+            DataContextChanged += async(_, e) =>
             {
                 if (e.NewValue is RealtimeMonitorViewModel vm)
                 {
-                    vm.Initialize();
+                    await vm.InitializeAsync();
                 }
             };
             Unloaded += (_, _) =>

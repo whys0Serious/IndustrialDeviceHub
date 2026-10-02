@@ -237,7 +237,7 @@ namespace DeviceHub.Client.ViewModels
             }
         }
 
-        [RelayCommand(CanExecute = nameof(CanEdit))]
+        [RelayCommand(CanExecute = nameof(CanViewDetail))]
         private async Task ViewDetailAsync()
         {
             if (SelectedWorkOrder == null) return;
@@ -247,7 +247,7 @@ namespace DeviceHub.Client.ViewModels
                 vm => _ = vm.InitializeAsync(id));
             await LoadAsync();
         }
-
+        private bool CanViewDetail() => SelectedWorkOrder != null;
         private bool CanEdit() => SelectedWorkOrder != null && SelectedWorkOrder.Status != WorkOrderStatus.Closed;
         private bool CanStart() => SelectedWorkOrder?.Status == WorkOrderStatus.Pending;
         private bool CanClose() => SelectedWorkOrder?.Status == WorkOrderStatus.Processing;
