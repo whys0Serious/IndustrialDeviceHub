@@ -1,5 +1,6 @@
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Entities;
+using DeviceHub.Core.Exceptions;
 using DeviceHub.Core.Interfaces;
 using DeviceHub.Infrastructure.Services;
 using FluentAssertions;
@@ -38,8 +39,8 @@ public class DeviceCategoryServiceTests
 
         var act = () => _service.CreateAsync(request);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-                 .WithMessage("*温度传感器*已存在*");
+        await act.Should().ThrowAsync<BusinessException>()
+       .WithMessage("*温度传感器*已存在*");
     }
     /// <summary>
     /// 成功新增分类
@@ -89,8 +90,8 @@ public class DeviceCategoryServiceTests
 
         var act = () => _service.DeleteAsync(1);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-                 .WithMessage("*还有设备*");
+        await act.Should().ThrowAsync<BusinessException>()
+        .WithMessage("*还有设备*不能删除*");
 
         _repoMock.Verify(r => r.DeleteAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }

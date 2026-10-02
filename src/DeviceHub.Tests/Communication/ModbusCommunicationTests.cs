@@ -17,7 +17,7 @@ namespace DeviceHub.Tests.Communication
             _output = output;
         }
 
-        [Fact]
+        [Fact(Skip = "需要先启动 DeviceHub.Simulator（监听 502）")]
         public async Task Connect_And_Read_Registers_Should_Work()
         {
             

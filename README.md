@@ -150,25 +150,60 @@ Modbus 仿真器 → Infrastructure（通信层） → Core（业务层）
 - 主题资源（浅色 / 深色预留）
 - 全局状态栏（版本 + 时间，服务状态预留）
 
-### 进行中
-
 #### 🚧 M3 实时监控（第 6-8 周）
 
-- [ ] Modbus TCP 连接管理
-- [ ] 1Hz 数据采集
-- [ ] 实时曲线（温度、压力）
-- [ ] 报警阈值判断
-- [ ] 报警列表
+**通信层：**
+- `IDeviceCommunication` 接口抽象（预留真实 PLC 适配）
+- `ModbusDeviceCommunication` 实现（NModbus）
+- 断线自动重连
 
-### 计划中
+**数据采集：**
+- `ModbusPollingService`（1Hz 后台轮询，`BackgroundService`）
+- `RealtimeDataCache`（`ConcurrentDictionary` 线程安全缓存）
+- `ModbusOptions` 配置化
 
-#### ⏳ M4 工单管理（第 9-10 周）
+**实时监控 UI：**
+- 温度：HandyControl `WaveProgressBar` 水波纹球
+- 压力 / 转速：LiveChartsCore 实时曲线
+- 保留最近 60 秒数据点
+- 连接状态 + 最后更新时间
 
-- [ ] 工单创建、流转、历史查询
-- [ ] 状态机（待处理 → 处理中 → 已关闭）
-- [ ] 工单详情 + 处理记录
+**报警系统：**
+- `Alarm` 实体 + `AlarmType` / `AlarmStatus` 枚举
+- 阈值判断（温度、压力、转速）
+- **状态变化触发**（`AlarmTracker`，符合 ISA-18.2 规范）
+- 报警恢复（`ResolvedAt`）
+- 报警列表：按状态 / 类型筛选、分页、确认
+- 底部状态栏报警横幅（有报警时显示，无报警时隐藏）
+- 报警确认后通过 `WeakReferenceMessenger` 通知横幅立即刷新
+- 
+**多设备支持：**
+- `DeviceHub.Simulator` 仿真器（模拟 3 台设备）
+- `Device` 加 Modbus 配置（`ModbusSlaveId`、`EnableMonitoring`）
+- `ModbusPollingService` 遍历所有启用监控的设备
+- 实时监控页设备选择器
 
-#### ⏳ M5 自定义控件库（第 11-12 周）
+#### ✅ M4 工单管理（第 9-10 周）
+
+**工单业务：**
+- `WorkOrder` + `WorkOrderLog` 实体
+- 工单状态机：`Pending → Processing → Closed`，禁止跳步
+- 工单号自动生成（`WO-YYYYMMDD-NNN`）
+- 创建、编辑、状态流转（开始处理 / 关闭工单）
+- 关闭工单需填写处理结果
+- 处理记录时间线
+
+**工单 UI：**
+- 工单列表：搜索、按状态 / 优先级 / 设备筛选、分页
+- 工单编辑对话框（新增 / 编辑）
+- 工单详情页：HandyControl `StepBar` 步骤条 + 故障描述 + 处理记录
+- 详情页不限制状态（已关闭工单可查看历史）
+- 关闭工单对话框（填写处理结果）
+- 详情页关闭后自动刷新列表
+
+### 进行中
+
+#### 🚧 M5 自定义控件库（第 11-12 周）
 
 - [ ] DeviceStatusIndicator（设备状态指示灯）
 - [ ] AlarmBanner（报警提示条）
