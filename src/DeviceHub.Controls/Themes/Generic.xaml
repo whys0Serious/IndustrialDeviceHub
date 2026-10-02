@@ -36,4 +36,62 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    <!-- 警告条-->
+    <Style TargetType="{x:Type controls:AlarmBanner}">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AlarmBanner}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- 图标 -->
+                        <TextBlock Text="⚠"
+                               FontSize="13"
+                               Foreground="{DynamicResource WarningBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,6,0"/>
+
+                        <!-- 数量 -->
+                        <TextBlock FontSize="12"
+                               Foreground="{DynamicResource WarningBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,15,0">
+                        <Run Text="{Binding Count, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                             FontWeight="Bold"/>
+                        <Run Text=" 条未确认报警"/>
+                        </TextBlock>
+
+                        <!-- 消息 -->
+                        <TextBlock Text="{TemplateBinding Message}"
+                               FontSize="12"
+                               Foreground="{DynamicResource WarningDarkBrush}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               MaxWidth="400"/>
+
+                        <!-- 查看按钮 -->
+                        <Button Grid.Column="2"
+                                Content="查看"
+                                Command="{TemplateBinding ViewCommand}"
+                                Background="Transparent"
+                                Foreground="{DynamicResource PrimaryBrush}"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                FontSize="13"
+                                Padding="8,0"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsOpen" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

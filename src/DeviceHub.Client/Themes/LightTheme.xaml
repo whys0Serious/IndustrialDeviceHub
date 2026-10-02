@@ -39,4 +39,6 @@
     <Color x:Key="AlarmBannerColor">#FAAD14</Color>
     <Color x:Key="AlarmBannerTextColor">#874D00</Color>
     <Color x:Key="AlarmBannerNormalColor">#B7EB8F</Color>
+    <Color x:Key="AlarmBannerLightColor">#FFF4E5</Color>
+    <Color x:Key="AlarmDarkColor">#FFD591</Color>
 </ResourceDictionary>

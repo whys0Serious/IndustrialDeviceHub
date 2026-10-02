@@ -43,4 +43,7 @@
     <SolidColorBrush x:Key="AlarmBannerBrush" Color="{StaticResource AlarmBannerColor}"/>
     <SolidColorBrush x:Key="AlarmBannerTextBrush" Color="{StaticResource AlarmBannerTextColor}"/>
     <SolidColorBrush x:Key="AlarmBannerNormalBrush" Color="{StaticResource AlarmBannerNormalColor}"/>
+    <SolidColorBrush x:Key="WarningLightBrush" Color="{StaticResource AlarmBannerLightColor}"/>
+    <SolidColorBrush x:Key="WarningDarkBrush" Color="{StaticResource AlarmDarkColor}"/>
+
 </ResourceDictionary>

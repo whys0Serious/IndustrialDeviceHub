@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DeviceHub.Client.Attributes;
 using DeviceHub.Client.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +11,7 @@ using System.Windows.Threading;
 
 namespace DeviceHub.Client.ViewModels
 {
+    [ViewModel(ServiceLifetime.Singleton)]
     public partial class MainWindowViewModel : ObservableObject
     {
         private readonly INavigationService _navigation;
@@ -39,7 +42,13 @@ namespace DeviceHub.Client.ViewModels
         /// 启动时默认导航到设备管理
         /// </summary>
         public void Initialize()
-            => _navigation.NavigateTo<DeviceListViewModel>();
+        {
+            // 启动报警横幅定时器
+            AlarmBanner.Start();
+
+            // 默认导航
+            _navigation.NavigateTo<DeviceListViewModel>();
+        }
 
         /// <summary>
         /// 当前显示的ViewMode（ContentControl 绑定它）

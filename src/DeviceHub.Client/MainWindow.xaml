@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviceHub.Client"
         xmlns:controls="clr-namespace:DeviceHub.Client.Controls"
+        xmlns:cont="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
         xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
         xmlns:views="clr-namespace:DeviceHub.Client.Views"
         mc:Ignorable="d"
@@ -96,10 +97,17 @@
                 </StackPanel>
 
                 <!-- 左：报警状态（AlarmBanner 适配底部） -->
-                <views:AlarmBanner Grid.Column="0"
+                <!--<views:AlarmBanner Grid.Column="0"
                                    Margin="10 0 0 0"
                                    DataContext="{Binding AlarmBanner}"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"/>-->
+                <cont:AlarmBanner Grid.Column="0"
+                          Message="{Binding AlarmBanner.FirstAlarmMessage}"
+                          Count="{Binding AlarmBanner.UnacknowledgedCount}"
+                          IsOpen="{Binding AlarmBanner.HasAlarms}"
+                          ViewCommand="{Binding AlarmBanner.ViewAlarmsCommand}"
+                        Visibility="{Binding AlarmBanner.HasAlarms,Converter={StaticResource BoolToVisibility}}"
+                          VerticalAlignment="Center"/>
                 <!-- 版本+时间 -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0 8 0 10">
                     <TextBlock Text="{Binding ShortVersion, Mode=OneWay}"

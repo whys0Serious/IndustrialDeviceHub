@@ -6,6 +6,7 @@ using DeviceHub.Client.Services;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,13 +17,13 @@ namespace DeviceHub.Client.ViewModels
 {
     public partial class AlarmBannerViewModel : ObservableObject, IDisposable
     {
-        private readonly IAlarmService _alarmService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly DispatcherTimer _timer;
         private readonly INavigationService _navigation;
 
-        public AlarmBannerViewModel(IAlarmService alarmService, INavigationService navigation)
+        public AlarmBannerViewModel(IServiceScopeFactory scopeFactory, INavigationService navigation)
         {
-            _alarmService = alarmService;
+            _scopeFactory = scopeFactory;
             _navigation = navigation;
 
             // 订阅报警变化消息：报警被确认/新增时立即刷新
@@ -57,8 +58,6 @@ namespace DeviceHub.Client.ViewModels
 
         public bool HasAlarms => UnacknowledgedCount > 0;
 
-
-
         partial void OnUnacknowledgedCountChanged(int value)
         {
             OnPropertyChanged(nameof(HasAlarms));
@@ -84,7 +83,11 @@ namespace DeviceHub.Client.ViewModels
         {
             try
             {
-                var alarms = await _alarmService.GetUnacknowledgedAsync(5);
+                //每次创建 Scope，拿新的 DbContext
+                using var scope = _scopeFactory.CreateScope();
+                var alarmService = scope.ServiceProvider.GetRequiredService<IAlarmService>();
+
+                var alarms = await alarmService.GetUnacknowledgedAsync(5);
 
                 UnacknowledgedAlarms.Clear();
                 foreach (var a in alarms) UnacknowledgedAlarms.Add(a);
