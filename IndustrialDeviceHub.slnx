@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/docker/" />
   <Folder Name="/docs/" />
+  <Folder Name="/src/">
+    <Project Path="src/DeviceHub.Simulator/DeviceHub.Simulator.csproj" />
+  </Folder>
   <Folder Name="/解决方案项/">
     <File Path="Directory.Build.props" />
     <File Path="gitignore" />
