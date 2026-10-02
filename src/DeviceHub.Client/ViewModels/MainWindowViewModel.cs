@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
 using DeviceHub.Client.Services;
+using DeviceHub.Client.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -64,6 +65,14 @@ namespace DeviceHub.Client.ViewModels
         {
             if (viewModelType == null) return;
             _navigation.NavigateTo(viewModelType);
+        }
+        /// <summary>
+        /// 切换主题（浅色/深色）
+        /// </summary>
+        [RelayCommand]
+        private void ToggleTheme()
+        {
+            ThemeManager.ToggleTheme();
         }
 
         /// <summary>

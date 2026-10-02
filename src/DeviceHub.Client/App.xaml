@@ -11,6 +11,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <!--项目主题（默认浅色）-->
+                <ResourceDictionary Source="pack://application:,,,/DeviceHub.Client;component/Themes/LightBrushes.xaml"/>
                 <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/LightBrushes.xaml"/>

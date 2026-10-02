@@ -1,5 +1,6 @@
-﻿using DeviceHub.Controls.Controls;
-using DeviceHub.Client.Extensions;
+﻿using DeviceHub.Client.Extensions;
+using DeviceHub.Client.Themes;
+using DeviceHub.Controls.Controls;
 using DeviceHub.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,9 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         await _host.StartAsync();
+
+        //启动时应用主题（默认浅色）
+        ThemeManager.ApplyTheme(AppTheme.Light);
 
         var mainWindow = _host.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();
