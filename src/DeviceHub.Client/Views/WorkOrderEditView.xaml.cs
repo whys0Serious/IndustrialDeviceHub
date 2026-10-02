@@ -1,4 +1,4 @@
-﻿using DeviceHub.Client.Controls;
+﻿using DeviceHub.Controls.Controls;
 
 namespace DeviceHub.Client.Views
 {

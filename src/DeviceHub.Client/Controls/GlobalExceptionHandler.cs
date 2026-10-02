@@ -1,4 +1,5 @@
-﻿using DeviceHub.Core.Exceptions;
+﻿using DeviceHub.Controls.Controls;
+using DeviceHub.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace DeviceHub.Client.Controls
+namespace DeviceHub.Client
 {
     /// <summary>
     /// 全局异常处理

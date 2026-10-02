@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
-namespace DeviceHub.Client.Controls;
+namespace DeviceHub.Controls.Controls;
 
 public partial class AppMessageBox : CustomWindow
 {

@@ -1,4 +1,4 @@
-﻿using DeviceHub.Client.Controls;
+﻿using DeviceHub.Controls.Controls;
 using DeviceHub.Client.ViewModels;
 using System;
 using System.Collections.Generic;

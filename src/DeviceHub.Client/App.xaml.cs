@@ -1,4 +1,4 @@
-﻿using DeviceHub.Client.Controls;
+﻿using DeviceHub.Controls.Controls;
 using DeviceHub.Client.Extensions;
 using DeviceHub.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;

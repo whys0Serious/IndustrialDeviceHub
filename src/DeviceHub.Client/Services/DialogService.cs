@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DeviceHub.Client.Controls;
+using DeviceHub.Controls.Controls;
 using HandyControl.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;

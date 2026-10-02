@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Shell;
 
-namespace DeviceHub.Client.Controls
+namespace DeviceHub.Controls.Controls
 {
     /// <summary>
     /// 自定义窗口头控件
@@ -40,7 +37,9 @@ namespace DeviceHub.Client.Controls
         }
 
 
-        // ---------- 关闭事件 ----------
+        /// <summary>
+        /// 关闭事件
+        /// </summary>
         private IDialogAware? _dialogAware;
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -115,7 +114,9 @@ namespace DeviceHub.Client.Controls
             set => SetValue(ShowCloseProperty, value);
         }
 
-        // ---------- 标题栏左右自定义内容 ----------
+        /// <summary>
+        /// 标题栏左右自定义内容
+        /// </summary>
 
         public static readonly DependencyProperty LeftContentProperty =
             DependencyProperty.Register(nameof(LeftContent), typeof(object), typeof(CustomWindow));

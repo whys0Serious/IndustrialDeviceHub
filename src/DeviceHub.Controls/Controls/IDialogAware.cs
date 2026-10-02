@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeviceHub.Client.Controls
+namespace DeviceHub.Controls.Controls
 {
     /// <summary>
     /// 对话框ViewModel实现此接口以获得关闭对话框能力

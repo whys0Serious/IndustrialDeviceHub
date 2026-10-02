@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DeviceHub.Client.Controls
+namespace DeviceHub.Controls.Controls
 {
     /// <summary>
     /// TitleBarControl.xaml 的交互逻辑

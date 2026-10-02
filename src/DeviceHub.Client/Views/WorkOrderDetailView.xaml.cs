@@ -1,4 +1,4 @@
-﻿using DeviceHub.Client.Controls;
+﻿using DeviceHub.Controls.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;

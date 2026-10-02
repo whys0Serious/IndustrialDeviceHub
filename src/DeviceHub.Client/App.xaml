@@ -14,8 +14,7 @@
                 <ResourceDictionary Source="/Themes/CaptionStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/LightBrushes.xaml"/>
-                <ResourceDictionary Source="/Themes/Generic.xaml"/>
-                
+
                 <ResourceDictionary Source="/Themes/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- 转换器 -->

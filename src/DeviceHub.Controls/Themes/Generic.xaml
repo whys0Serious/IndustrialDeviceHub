@@ -36,7 +36,38 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--自定义窗口-->
+    <Style TargetType="{x:Type controls:CustomWindow}">
+        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="ResizeMode" Value="CanResize"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CustomWindow}">
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="32"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <controls:TitleBarControl Grid.Row="0"
+                            WindowTitle="{TemplateBinding Title}"
+                            ShowMinimize="{TemplateBinding ShowMinimize}"
+                            ShowMaximize="{TemplateBinding ShowMaximize}"
+                            ShowClose="{TemplateBinding ShowClose}"
+                            LeftContent="{TemplateBinding LeftContent}"
+                            RightContent="{TemplateBinding RightContent}"/>
 
+                            <ContentPresenter Grid.Row="1"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- 警告条-->
     <Style TargetType="{x:Type controls:AlarmBanner}">

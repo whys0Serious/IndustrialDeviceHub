@@ -1,5 +1,5 @@
 ﻿
-using DeviceHub.Client.Controls;
+using DeviceHub.Controls.Controls;
 using DeviceHub.Client.ViewModels;
 
 namespace DeviceHub.Client

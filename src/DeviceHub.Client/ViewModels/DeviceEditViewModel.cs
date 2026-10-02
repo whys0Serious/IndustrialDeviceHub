@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
-using DeviceHub.Client.Controls;
+using DeviceHub.Controls.Controls;
 using DeviceHub.Client.Models;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;

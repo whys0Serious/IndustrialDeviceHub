@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviceHub.Client.Views"
         mc:Ignorable="d"
-        xmlns:control="clr-namespace:DeviceHub.Client.Controls"
+        xmlns:control="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
         Title="DeviceCategoryEditView" Height="300" Width="400"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource BackgroundBrush}">
