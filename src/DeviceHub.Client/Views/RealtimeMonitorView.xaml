@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DeviceHub.Client.Views"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="20">
@@ -16,6 +17,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -31,8 +33,12 @@
               DisplayMemberPath="Name"
               Width="250" Height="32"
               VerticalAlignment="Center"/>
-
-            <TextBlock Grid.Column="3"
+            <controls:DeviceStatusIndicator Grid.Column="3"
+                                    Status="{Binding SelectedDevice.Status}"
+                                    DotSize="16"
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="4"
                Text="{Binding ErrorMessage}"
                Foreground="Red"
                VerticalAlignment="Center"

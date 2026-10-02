@@ -35,7 +35,7 @@ namespace DeviceHub.Infrastructure.Extensions
                 ?? throw new InvalidOperationException("缺少连接字符串Default");
 
             services.AddDbContext<DeviceHubDbContext>(options =>
-                options.UseSqlServer(connStr));
+                options.UseSqlServer(connStr),ServiceLifetime.Transient);
 
             //Repository
             services.AddScoped<IDeviceRepository, DeviceRepository>();

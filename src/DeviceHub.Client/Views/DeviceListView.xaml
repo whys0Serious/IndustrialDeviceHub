@@ -7,6 +7,7 @@
              mc:Ignorable="d"
              Background="{DynamicResource SurfaceBrush}"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
             >
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -154,7 +155,13 @@
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
                         <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="200"/>
                         <DataGridTextColumn Header="设备编号" Binding="{Binding Code}" Width="150"/>
-                        <DataGridTextColumn Header="状态" Binding="{Binding StatusText}" Width="100" />
+                        <DataGridTemplateColumn Header="状态" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <controls:DeviceStatusIndicator Status="{Binding Status}" DotSize="20" Width="40" Height="30" HorizontalAlignment="Left"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="分类" Binding="{Binding CategoryName}" Width="150"/>
                         <DataGridTemplateColumn Header="备注" Width="*" CanUserSort="False">
                             <DataGridTemplateColumn.CellTemplate>

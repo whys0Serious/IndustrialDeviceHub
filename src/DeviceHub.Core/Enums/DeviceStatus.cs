@@ -20,6 +20,10 @@ namespace DeviceHub.Core.Enums
         /// <summary>
         /// 警报
         /// </summary>
-        Alarm = 2
+        Alarm = 2,
+        /// <summary>
+        /// 维护
+        /// </summary>
+        Maintenance = 3
     }
 }

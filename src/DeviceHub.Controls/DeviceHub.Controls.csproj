@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>DeviceHub.Controls</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HandyControl" Version="3.5.1" />
+    <ProjectReference Include="..\DeviceHub.Core\DeviceHub.Core.csproj" />
   </ItemGroup>
 
 </Project>

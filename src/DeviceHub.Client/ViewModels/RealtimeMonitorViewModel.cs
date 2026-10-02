@@ -35,6 +35,9 @@ namespace DeviceHub.Client.ViewModels
         [ObservableProperty]
         private DeviceDto? _selectedDevice;
 
+
+        [ObservableProperty] private string? _errorMessage;
+
         public ObservableCollection<DeviceDto> DeviceOptions { get; } = new();
 
         //初始化加载启用监控的设备
@@ -231,8 +234,9 @@ namespace DeviceHub.Client.ViewModels
 
             SelectedDevice = DeviceOptions.FirstOrDefault();
         }
-        catch{
-
+        catch(Exception ex)
+        {
+            ErrorMessage = $"加载设备失败：{ex.Message}";
         }
     }
 
