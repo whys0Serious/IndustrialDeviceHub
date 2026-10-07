@@ -23,5 +23,13 @@ namespace DeviceHub.Core.Interfaces
         /// 生成下一个工单号
         /// </summary>
         Task<string> GenerateOrderNoAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// 按关键词搜索历史工单（Title/Description/Resolution）
+        /// </summary>
+        Task<IReadOnlyList<WorkOrder>> SearchByKeywordsAsync(
+            IReadOnlyList<string> keywords,
+            int limit = 10,
+            CancellationToken ct = default);
     }
 }

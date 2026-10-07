@@ -94,5 +94,27 @@ namespace DeviceHub.Infrastructure.Repositories
             var seq = (todayCount + 1).ToString("D3");
             return $"{prefix}{seq}";
         }
+
+        public async Task<IReadOnlyList<WorkOrder>> SearchByKeywordsAsync(
+        IReadOnlyList<string> keywords,
+        int limit = 10,
+        CancellationToken ct = default)
+        {
+            if (keywords == null || keywords.Count == 0)
+                return Array.Empty<WorkOrder>();
+
+            var query = _db.WorkOrders
+                .AsNoTracking()
+                .Include(o => o.Device)
+                .Where(o => o.Status == WorkOrderStatus.Closed);   //只搜已关闭的（有处理结果）
+
+            //只匹配Title
+            query = query.Where(o => keywords.Any(k => o.Title.Contains(k)));
+
+            return await query
+                .OrderByDescending(o => o.ClosedAt)
+                .Take(limit)
+                .ToListAsync(ct);
+        }
     }
 }

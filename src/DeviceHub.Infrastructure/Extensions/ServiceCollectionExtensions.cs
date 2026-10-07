@@ -50,6 +50,7 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IRealtimeDataService, RealtimeDataService>();//实时数据服务
             services.AddScoped<IAlarmService, AlarmService>();//报警服务
             services.AddScoped<IWorkOrderService, WorkOrderService>();//工单服务
+            services.AddScoped<IAiKnowledgeService, AiKnowledgeService>();//AI知识库服务
 
             // 通信
             services.AddSingleton<IDeviceCommunication, ModbusDeviceCommunication>();
