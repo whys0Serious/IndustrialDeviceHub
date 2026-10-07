@@ -9,6 +9,7 @@ using DeviceHub.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel;
 
 namespace DeviceHub.Infrastructure.Extensions
 {
@@ -65,6 +66,32 @@ namespace DeviceHub.Infrastructure.Extensions
 
             // Modbus 后台轮询
             services.AddHostedService<ModbusPollingService>();
+
+            // AI 配置
+            services.Configure<AiOptions>(configuration.GetSection(AiOptions.SectionName));
+
+            // Semantic Kernel
+            services.AddSingleton<Kernel>(sp =>
+            {
+                var aiOptions = configuration.GetSection(AiOptions.SectionName).Get<AiOptions>()
+                    ?? throw new InvalidOperationException("缺少Ai配置");
+
+                if (string.IsNullOrWhiteSpace(aiOptions.ApiKey))
+                    throw new InvalidOperationException("缺少Ai:ApiKey");
+
+                var builder = Kernel.CreateBuilder();
+
+                //用 OpenAI 兼容连接器（DeepSeek 也兼容）
+                builder.AddOpenAIChatCompletion(
+                    modelId: aiOptions.ModelId,
+                    apiKey: aiOptions.ApiKey,
+                    endpoint: new Uri(aiOptions.Endpoint));
+
+                return builder.Build();
+            });
+
+            //AI 服务
+            services.AddScoped<IAiService, AiService>();
 
             return services;
         }
