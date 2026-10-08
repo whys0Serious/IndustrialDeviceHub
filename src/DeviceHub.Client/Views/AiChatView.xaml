@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="DeviceHub.Client.Views.AiChatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DeviceHub.Client.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0" Text="AI 助手" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- 输入区 -->
+        <Border Grid.Row="1" Background="{DynamicResource SurfaceBrush}"
+                CornerRadius="6" Padding="15" Margin="0,0,0,15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="输入故障描述：" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+                <TextBox Grid.Row="1"
+                         Text="{Binding FaultDescription, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         Height="80" VerticalScrollBarVisibility="Auto"
+                         Padding="8" Margin="0,0,0,10"/>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="{Binding ErrorMessage}"
+                               Foreground="Red" VerticalAlignment="Center"/>
+
+                    <Button Grid.Column="1" Content="清空"
+                            Command="{Binding ClearCommand}"
+                            MinWidth="80" Height="32" Margin="0,0,10,0"/>
+
+                    <Button Grid.Column="2" Content="🔍 诊断"
+                            Command="{Binding DiagnoseCommand}"
+                            MinWidth="100" Height="32"
+                            Background="{DynamicResource PrimaryBrush}"
+                            Foreground="White" BorderThickness="0"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 结果区 -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- 加载中 -->
+                <TextBlock Text="正在诊断中..."
+                           HorizontalAlignment="Center"
+                           FontSize="14" Foreground="Gray"
+                           Margin="0,20"
+                           Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+
+                <!-- AI 建议 -->
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="6" Padding="15" Margin="0,0,0,15"
+                        Visibility="{Binding HasResult, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="💡 AI 建议" FontSize="15" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource PrimaryBrush}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{Binding Suggestion}"
+                                   TextWrapping="Wrap" FontSize="13" LineHeight="22"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 相似案例 -->
+                <StackPanel Visibility="{Binding HasSimilarCases, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="📋 相似历史案例" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,10"/>
+
+                    <ItemsControl ItemsSource="{Binding SimilarCases}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource SurfaceBrush}"
+                                        CornerRadius="6" Padding="15" Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding OrderNo}"
+                                                       FontWeight="SemiBold" FontSize="13"
+                                                       Foreground="{DynamicResource PrimaryBrush}"/>
+
+                                            <TextBlock Grid.Column="1" Text="{Binding Title}"
+                                                       FontSize="13" Margin="15,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Similarity, StringFormat=相似度 {0:P0}}"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <TextBlock Text="{Binding Description}"
+                                                   TextWrapping="Wrap" FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   Margin="0,6,0,0"/>
+
+                                        <TextBlock Text="{Binding Resolution, StringFormat=处理：{0}}"
+                                                   TextWrapping="Wrap" FontSize="12"
+                                                   Foreground="{DynamicResource SuccessBrush}"
+                                                   Margin="0,4,0,0"
+                                                  />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

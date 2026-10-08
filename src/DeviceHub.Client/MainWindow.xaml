@@ -77,6 +77,13 @@
                  Style="{StaticResource SidebarRadioButtonStyle}"
                  Command="{Binding NavigateCommand}"
                  CommandParameter="{x:Type vm:WorkOrderListViewModel}"/>
+
+                <RadioButton Content="AI 助手"
+                 GroupName="MainMenu"
+                 Height="40" Margin="0,5"
+                 Style="{StaticResource SidebarRadioButtonStyle}"
+                 Command="{Binding NavigateCommand}"
+                 CommandParameter="{x:Type vm:AiChatViewModel}"/>
             </StackPanel>
         </Border>
 

@@ -31,6 +31,16 @@ namespace DeviceHub.Client.Extensions
             services.AddViewModelsFromAssembly(assembly);
             services.AddViewsFromAssembly(assembly);
 
+            // API地址配置
+            var apiBaseUrl = configuration["Api:BaseUrl"]
+                ?? throw new InvalidOperationException("缺少 Api:BaseUrl 配置");
+
+            // HttpClient+AiClientService
+            services.AddHttpClient<IAiClientService, AiClientService>(client =>
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(60);  
+            });
             return services;
         }
     }
