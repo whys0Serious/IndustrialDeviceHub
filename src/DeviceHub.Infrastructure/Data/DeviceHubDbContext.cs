@@ -44,6 +44,11 @@ namespace DeviceHub.Infrastructure.Data
         /// </summary>
         public DbSet<WorkOrderLog> WorkOrderLogs => Set<WorkOrderLog>();
         /// <summary>
+        /// 用户表
+        /// </summary>
+        public DbSet<User> Users => Set<User>();
+
+        /// <summary>
         /// 模型创建时调用
         /// ApplyConfigurationsFromAssembly会自动扫描当前程序集所有实现了IEntityTypeConfiguration的类
         /// 新增实体配置不用改 DbContext

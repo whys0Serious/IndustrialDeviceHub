@@ -1,6 +1,8 @@
 ﻿using DeviceHub.Client.Extensions;
 using DeviceHub.Client.Themes;
 using DeviceHub.Controls.Controls;
+using DeviceHub.Core.DTOs;
+using DeviceHub.Core.Interfaces;
 using DeviceHub.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +38,14 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         await _host.StartAsync();
+
+        //首次启动创建默认管理员
+        using (var scope = _host.Services.CreateScope())
+        {
+            var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
+            await authService.EnsureDefaultAdminAsync();
+        }
+
 
         //启动时应用主题（默认浅色）
         ThemeManager.ApplyTheme(AppTheme.Light);

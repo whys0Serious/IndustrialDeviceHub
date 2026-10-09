@@ -43,6 +43,7 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IDeviceCategoryRepository, DeviceCategoryRepository>();
             services.AddScoped<IAlarmRepository, AlarmRepository>();
             services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Service
             services.AddScoped<IDeviceService, DeviceService>();//设备信息服务
@@ -51,6 +52,8 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IAlarmService, AlarmService>();//报警服务
             services.AddScoped<IWorkOrderService, WorkOrderService>();//工单服务
             services.AddScoped<IAiKnowledgeService, AiKnowledgeService>();//AI知识库服务
+            services.AddScoped<IAuthService, AuthService>();//认证服务
+
 
             // 通信
             services.AddSingleton<IDeviceCommunication, ModbusDeviceCommunication>();
@@ -64,12 +67,15 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddSingleton<IRealtimeDataCache, RealtimeDataCache>();
             // 报警状态跟踪
             services.AddSingleton<AlarmTracker>();
+            // 会话（单例）
+            services.AddSingleton<ISessionService, SessionService>();
 
             // Modbus 后台轮询
             services.AddHostedService<ModbusPollingService>();
 
             // AI 配置
             services.Configure<AiOptions>(configuration.GetSection(AiOptions.SectionName));
+           
 
             // Semantic Kernel
             services.AddSingleton<Kernel>(sp =>

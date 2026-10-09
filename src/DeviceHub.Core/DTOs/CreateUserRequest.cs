@@ -1,0 +1,15 @@
+﻿using DeviceHub.Core.Enums;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DeviceHub.Core.DTOs
+{
+    public class CreateUserRequest
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Operator;
+    }
+}
