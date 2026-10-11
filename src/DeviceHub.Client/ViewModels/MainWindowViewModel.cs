@@ -3,11 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
 using DeviceHub.Client.Services;
 using DeviceHub.Client.Themes;
+using DeviceHub.Client.Views;
+using DeviceHub.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace DeviceHub.Client.ViewModels
@@ -20,10 +23,13 @@ namespace DeviceHub.Client.ViewModels
 
         public AlarmBannerViewModel AlarmBanner { get; }
 
-        public MainWindowViewModel(INavigationService navigation, AlarmBannerViewModel alarmBanner)
+        private readonly ISessionService _session;
+
+        public MainWindowViewModel(INavigationService navigation, AlarmBannerViewModel alarmBanner, ISessionService session)
         {
             _navigation = navigation;
             AlarmBanner = alarmBanner;
+            _session = session;
 
             // 把NavigationService的属性变化转发到CurrentViewModel
             _navigation.PropertyChanged += (_, e) =>
@@ -39,6 +45,21 @@ namespace DeviceHub.Client.ViewModels
             // 读版本号
             LoadVersion();
         }
+
+        /// <summary>
+        /// 当前用户名
+        /// </summary>
+        public string CurrentUserName => _session.CurrentUser?.DisplayName ?? "未登录";
+
+        /// <summary>
+        /// 当前用户角色
+        /// </summary>
+        public string CurrentUserRole => _session.CurrentUser?.RoleText ?? "";
+
+        /// <summary>
+        /// 是否管理员
+        /// </summary>
+        public bool IsAdmin => _session.IsAdmin;
         /// <summary>
         /// 启动时默认导航到设备管理
         /// </summary>
@@ -76,6 +97,35 @@ namespace DeviceHub.Client.ViewModels
         }
 
         /// <summary>
+        /// 退出登录
+        /// </summary>
+        [RelayCommand]
+        private void Logout()
+        {
+            _session.Clear();
+
+            // 主窗口不关、不隐藏，保持在后台
+            var loginWindow = App.Services.GetRequiredService<LoginView>();
+            var loginResult = loginWindow.ShowDialog();
+
+            if (loginResult == true)
+            {
+                // 登录成功 → 刷新主窗口上的用户信息
+                RefreshUserInfo();
+            }
+            else
+            {
+                // 用户取消 → 直接回到主界面
+            }
+        }
+        public void RefreshUserInfo()
+        {
+            OnPropertyChanged(nameof(CurrentUserName));
+            OnPropertyChanged(nameof(CurrentUserRole));
+            OnPropertyChanged(nameof(IsAdmin));
+        }
+
+        /// <summary>
         /// 软件版本号（从程序集读）
         /// </summary>
         [ObservableProperty] private string _shortVersion = "v0.0.0";
@@ -86,19 +136,6 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
         [ObservableProperty]
         private string _currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-        // ---------- 预留：M3 加 Modbus 状态 ----------
-        // [ObservableProperty] private bool _isModbusConnected;
-        // [ObservableProperty] private string _modbusStatusText = "Modbus 未连接";
-
-        // ---------- 预留：M6 加 AI 服务状态 ----------
-        // [ObservableProperty] private bool _isAiAvailable;
-        // [ObservableProperty] private string _aiStatusText = "AI 服务不可用";
-
-        // ---------- 预留：M4 加后台任务进度 ----------
-        // [ObservableProperty] private bool _isTaskRunning;
-        // [ObservableProperty] private string _taskDescription;
-        // [ObservableProperty] private int _taskProgress;
 
         private void LoadVersion()
         {

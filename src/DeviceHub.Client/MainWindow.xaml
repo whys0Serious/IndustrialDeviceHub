@@ -13,9 +13,27 @@
         Height="700" Width="1200"
         Background="{DynamicResource BackgroundBrush}"
         xmlns:hc="https://handyorg.github.io/handycontrol">
-    <!-- ★ 标题栏右侧：主题切换按钮 -->
+    <!-- 标题栏右侧：主题切换按钮 -->
     <controls:CustomWindow.RightContent>
-        <Button Content="🌓"
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="{Binding CurrentUserName}"
+                   Foreground="{DynamicResource TitleBarForegroundBrush}"
+                   FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBlock Text="{Binding CurrentUserRole}"
+                   Foreground="{DynamicResource TextSecondaryBrush}"
+                   FontSize="11" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+            <Button Content="🚪 退出"
+                Command="{Binding LogoutCommand}"
+                Background="Transparent"
+                Foreground="{DynamicResource TitleBarForegroundBrush}"
+                BorderThickness="0"
+                Cursor="Hand"
+                FontSize="12"
+                Margin="0,0,10,0"
+                Padding="6,0"/>
+
+            <Button Content="🌓"
                 Command="{Binding ToggleThemeCommand}"
                 Background="Transparent"
                 Foreground="{DynamicResource TitleBarForegroundBrush}"
@@ -24,6 +42,7 @@
                 FontSize="16"
                 Width="32" Height="32"
                 ToolTip="切换主题"/>
+        </StackPanel>
     </controls:CustomWindow.RightContent>
     <Grid>
         <Grid.RowDefinitions>
@@ -77,6 +96,14 @@
                  Style="{StaticResource SidebarRadioButtonStyle}"
                  Command="{Binding NavigateCommand}"
                  CommandParameter="{x:Type vm:WorkOrderListViewModel}"/>
+
+                <RadioButton Content="用户管理"
+                 GroupName="MainMenu"
+                 Height="40" Margin="0,5"
+                 Style="{StaticResource SidebarRadioButtonStyle}"
+                 Command="{Binding NavigateCommand}"
+                 CommandParameter="{x:Type vm:UserListViewModel}"
+                 Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}"/>
 
                 <RadioButton Content="AI 助手"
                  GroupName="MainMenu"

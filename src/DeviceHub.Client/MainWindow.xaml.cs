@@ -1,6 +1,7 @@
 ﻿
-using DeviceHub.Controls.Controls;
 using DeviceHub.Client.ViewModels;
+using DeviceHub.Controls.Controls;
+using System.ComponentModel;
 
 namespace DeviceHub.Client
 {

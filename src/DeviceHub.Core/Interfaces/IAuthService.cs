@@ -36,5 +36,15 @@ namespace DeviceHub.Core.Interfaces
         /// 初始化默认管理员（首次启动时调用）
         /// </summary>
         Task EnsureDefaultAdminAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// 管理员更新用户资料（显示名 / 角色，可选重置密码）
+        /// </summary>
+        Task UpdateUserAsync(UpdateUserRequest request, CancellationToken ct = default);
+
+        /// <summary>
+        /// 根据 Id 获取单个用户
+        /// </summary>
+        Task<UserDto?> GetUserByIdAsync(int id, CancellationToken ct = default);
     }
 }

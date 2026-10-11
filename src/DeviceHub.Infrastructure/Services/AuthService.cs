@@ -2,6 +2,7 @@
 using DeviceHub.Core.Entities;
 using DeviceHub.Core.Exceptions;
 using DeviceHub.Core.Interfaces;
+using DeviceHub.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 
 namespace DeviceHub.Infrastructure.Services
@@ -136,5 +137,40 @@ namespace DeviceHub.Infrastructure.Services
             CreatedAt = u.CreatedAt,
             LastLoginAt = u.LastLoginAt
         };
+
+        public async Task UpdateUserAsync(UpdateUserRequest request, CancellationToken ct = default)
+        {
+            var user = await _repo.GetByIdAsync(request.Id, ct)
+                       ?? throw new InvalidOperationException("用户不存在");
+
+            if (string.IsNullOrWhiteSpace(request.DisplayName))
+                throw new ArgumentException("显示名不能为空");
+
+            user.DisplayName = request.DisplayName.Trim();
+            user.Role = request.Role;
+
+            if (!string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            }
+
+            await _repo.UpdateAsync(user, ct);
+        }
+
+        public async Task<UserDto?> GetUserByIdAsync(int id, CancellationToken ct = default)
+        {
+            var user = await _repo.GetByIdAsync(id, ct);
+            if (user is null) return null;
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                DisplayName = user.DisplayName,
+                Role = user.Role,
+                IsActive = user.IsActive
+            };
+        }
     }
 }

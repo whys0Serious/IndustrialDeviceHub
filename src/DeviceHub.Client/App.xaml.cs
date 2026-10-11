@@ -1,5 +1,6 @@
 ﻿using DeviceHub.Client.Extensions;
 using DeviceHub.Client.Themes;
+using DeviceHub.Client.Views;
 using DeviceHub.Controls.Controls;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
@@ -37,30 +38,54 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
-        await _host.StartAsync();
-
-        //首次启动创建默认管理员
-        using (var scope = _host.Services.CreateScope())
-        {
-            var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-            await authService.EnsureDefaultAdminAsync();
-        }
-
-
-        //启动时应用主题（默认浅色）
-        ThemeManager.ApplyTheme(AppTheme.Light);
-
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        MainWindow = mainWindow;
-        mainWindow.Show();
-
         base.OnStartup(e);
+        try
+        {
+            await _host.StartAsync();
+
+            using (var scope = _host.Services.CreateScope())
+            {
+                var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
+                await authService.EnsureDefaultAdminAsync();
+            }
+
+            ThemeManager.ApplyTheme(AppTheme.Light);
+            //先创建主窗口
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            MainWindow = mainWindow;
+            //显示登录窗口
+            var loginWindow = _host.Services.GetRequiredService<LoginView>();
+            var loginResult = loginWindow.ShowDialog();
+            if (loginResult != true)
+            {
+                Shutdown();
+                return;
+            }
+            //登录成功后再显示主窗口
+            mainWindow.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"启动失败：{ex.Message}", "错误",
+            MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown(-1);
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        await _host.StopAsync();
-        _host.Dispose();
+        try
+        {
+            await _host.StopAsync(TimeSpan.FromSeconds(3));
+        }
+        catch (OperationCanceledException)
+        {
+            //正常取消
+        }
+        finally
+        {
+            _host.Dispose();
+        }
         base.OnExit(e);
     }
 }
