@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource BackgroundBrush}"
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
         Title="DeviceEditView"
+        IsDialog="True"
         Width="400"
         Height="500">
     <Grid Margin="20">
@@ -62,6 +64,7 @@
                      Text="{Binding Remark, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap"
                      VerticalAlignment="Top"
+                     VerticalContentAlignment="Top" Padding="9"
                      Height="150" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
             <TextBlock Grid.Row="5" Grid.ColumnSpan="2"
                        VerticalAlignment="Center"

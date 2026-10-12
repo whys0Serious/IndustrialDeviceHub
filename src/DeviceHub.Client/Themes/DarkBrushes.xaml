@@ -11,9 +11,12 @@
 
     <!-- 状态色 -->
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="SuccessLightBrush" Color="{StaticResource SuccessLightColor}"/>
     <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="WarningLightBrush" Color="{StaticResource WarningLightColor}"/>
     <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
     <SolidColorBrush x:Key="DangerDarkBrush" Color="{StaticResource DangerDarkColor}"/>
+    <SolidColorBrush x:Key="DangerLightBrush" Color="{StaticResource DangerLightColor}"/>
 
     <!-- 中性色 -->
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
@@ -28,7 +31,7 @@
     <SolidColorBrush x:Key="SurfaceHoverBrush" Color="{StaticResource SurfaceHoverColor}"/>
     <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="{StaticResource HeaderBackgroundColor}"/>
 
-    <!-- 左侧菜单 / 状态栏 -->
+    <!-- 左侧菜单 -->
     <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource SidebarBackgroundColor}"/>
     <SolidColorBrush x:Key="SidebarTextBrush" Color="{StaticResource SidebarTextColor}"/>
     <SolidColorBrush x:Key="SidebarTextSecondaryBrush" Color="{StaticResource SidebarTextSecondaryColor}"/>
@@ -41,11 +44,11 @@
     <SolidColorBrush x:Key="TitleBarButtonHoverBrush" Color="{StaticResource TitleBarButtonHoverColor}"/>
     <SolidColorBrush x:Key="TitleBarButtonPressedBrush" Color="{StaticResource TitleBarButtonPressedColor}"/>
 
-    <!--报警横幅-->
+    <!-- 报警横幅 -->
     <SolidColorBrush x:Key="AlarmBannerBrush" Color="{StaticResource AlarmBannerColor}"/>
     <SolidColorBrush x:Key="AlarmBannerTextBrush" Color="{StaticResource AlarmBannerTextColor}"/>
     <SolidColorBrush x:Key="AlarmBannerNormalBrush" Color="{StaticResource AlarmBannerNormalColor}"/>
-    <SolidColorBrush x:Key="WarningLightBrush" Color="{StaticResource WarningLightColor}"/>
-    <SolidColorBrush x:Key="WarningDarkBrush" Color="{StaticResource WarningDarkColor}"/>
-    
+    <SolidColorBrush x:Key="AlarmBannerLightBrush" Color="{StaticResource AlarmBannerLightColor}"/>
+    <SolidColorBrush x:Key="AlarmDarkBrush" Color="{StaticResource AlarmDarkColor}"/>
+
 </ResourceDictionary>

@@ -8,7 +8,8 @@
         xmlns:control="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
         Title="DeviceCategoryEditView" Height="300" Width="400"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource BackgroundBrush}">
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
+        IsDialog="True">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -37,6 +38,7 @@
             <TextBox Grid.Column="1"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap"
+                     VerticalContentAlignment="Top" Padding="9"
                      Height="80" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
         </Grid>
 

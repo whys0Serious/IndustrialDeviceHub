@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DeviceHub.Client.Views"
              mc:Ignorable="d"
              Background="{DynamicResource SurfaceBrush}"
+             TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
             >

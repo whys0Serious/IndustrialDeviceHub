@@ -12,7 +12,9 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         ShowMinimize="False"
-        ShowMaximize="False">
+        ShowMaximize="False"
+        IsDialog="True"               
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,7 +42,7 @@
             <TextBox Grid.Row="1"
                      Text="{Binding Resolution, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top"
                      Padding="8"
                      MinHeight="100"/>
         </Grid>

@@ -11,13 +11,15 @@
         mc:Ignorable="d"
         x:Name="MainWindowRoot"
         Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BackgroundBrush}"
+        ShowMaximize="True"
         xmlns:hc="https://handyorg.github.io/handycontrol">
     <!-- 标题栏右侧：主题切换按钮 -->
     <controls:CustomWindow.RightContent>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <TextBlock Text="{Binding CurrentUserName}"
-                   Foreground="{DynamicResource TitleBarForegroundBrush}"
+                   Foreground="{DynamicResource TextPrimaryBrush}"
                    FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <TextBlock Text="{Binding CurrentUserRole}"
                    Foreground="{DynamicResource TextSecondaryBrush}"
@@ -58,67 +60,67 @@
         <Border Grid.Column="0" Background="{DynamicResource SidebarBackgroundBrush}" Margin="0,0,0,30" Grid.RowSpan="2">
             <StackPanel Margin="10">
                 <TextBlock Text="设备中枢" FontSize="20" FontWeight="Bold"
-                           Foreground="{DynamicResource SidebarTextBrush}"
-                           Margin="0,20,0,30" HorizontalAlignment="Center"/>
+                        Foreground="{DynamicResource SidebarTextBrush}"
+                        Margin="0,20,0,30" HorizontalAlignment="Center"/>
                 <!--加新页面 -->
                 <RadioButton Content="设备管理"
-                 GroupName="MainMenu"
-                 IsChecked="True"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:DeviceListViewModel}"/>
+              GroupName="MainMenu"
+              IsChecked="True"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:DeviceListViewModel}"/>
 
                 <RadioButton Content="分类管理"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:DeviceCategoryListViewModel}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:DeviceCategoryListViewModel}"/>
 
                 <RadioButton Content="实时监控"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:RealtimeMonitorViewModel}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:RealtimeMonitorViewModel}"/>
 
                 <RadioButton Content="报警列表"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:AlarmListViewModel}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:AlarmListViewModel}"/>
 
                 <RadioButton Content="工单管理"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:WorkOrderListViewModel}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:WorkOrderListViewModel}"/>
 
                 <RadioButton Content="用户管理"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:UserListViewModel}"
-                 Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:UserListViewModel}"
+              Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}"/>
 
                 <RadioButton Content="AI 助手"
-                 GroupName="MainMenu"
-                 Height="40" Margin="0,5"
-                 Style="{StaticResource SidebarRadioButtonStyle}"
-                 Command="{Binding NavigateCommand}"
-                 CommandParameter="{x:Type vm:AiChatViewModel}"/>
+              GroupName="MainMenu"
+              Height="40" Margin="0,5"
+              Style="{StaticResource SidebarRadioButtonStyle}"
+              Command="{Binding NavigateCommand}"
+              CommandParameter="{x:Type vm:AiChatViewModel}"/>
             </StackPanel>
         </Border>
 
         <!--右侧根据 CurrentViewModel自动找DataTemplate-->
         <ContentControl Grid.Column="1"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch" 
-                        Content="{Binding CurrentViewModel}" Grid.ColumnSpan="2" Margin="0,0,0,30" Grid.RowSpan="2"/>
+                     HorizontalContentAlignment="Stretch"
+                     VerticalContentAlignment="Stretch" 
+                     Content="{Binding CurrentViewModel}" Grid.ColumnSpan="2" Margin="0,0,0,30" Grid.RowSpan="2"/>
         <!-- 全局状态栏 -->
         <Border Grid.Row="1" Grid.ColumnSpan="3" Background="{DynamicResource SidebarBackgroundBrush}">
             <Grid>
@@ -128,43 +130,27 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!--服务状态区（M3填 Modbus，M6 填 AI）-->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- 占位：M3 加 Modbus 状态，M6 加 AI 状态 -->
-                </StackPanel>
-
-                <!-- 后台任务区（M4 填导入进度等） -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
-                            HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <!-- 占位-->
-                    <!-- 
-                    <TextBlock Text="正在导入知识库..." Foreground="White" FontSize="12"/>
-                    <ProgressBar Value="45" Width="100" Height="10" Margin="10,0"/>
-                    -->
+                         HorizontalAlignment="Center" VerticalAlignment="Center">
                 </StackPanel>
 
-                <!-- 左：报警状态（AlarmBanner 适配底部） -->
-                <!--<views:AlarmBanner Grid.Column="0"
-                                   Margin="10 0 0 0"
-                                   DataContext="{Binding AlarmBanner}"
-                                   VerticalAlignment="Center"/>-->
                 <cont:AlarmBanner Grid.Column="0"
-                          Message="{Binding AlarmBanner.FirstAlarmMessage}"
-                          Count="{Binding AlarmBanner.UnacknowledgedCount}"
-                          IsOpen="{Binding AlarmBanner.HasAlarms}"
-                          ViewCommand="{Binding AlarmBanner.ViewAlarmsCommand}"
-                        Visibility="{Binding AlarmBanner.HasAlarms,Converter={StaticResource BoolToVisibility}}"
-                          VerticalAlignment="Center"/>
+                       Message="{Binding AlarmBanner.FirstAlarmMessage}"
+                       Count="{Binding AlarmBanner.UnacknowledgedCount}"
+                       IsOpen="{Binding AlarmBanner.HasAlarms}"
+                       ViewCommand="{Binding AlarmBanner.ViewAlarmsCommand}"
+                     Visibility="{Binding AlarmBanner.HasAlarms,Converter={StaticResource BoolToVisibility}}"
+                       VerticalAlignment="Center"/>
                 <!-- 版本+时间 -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0 8 0 10">
                     <TextBlock Text="{Binding ShortVersion, Mode=OneWay}"
-                               ToolTip="{Binding FullVersion, Mode=OneWay}"
-                               Foreground="{DynamicResource SidebarTextSecondaryBrush}"
-                               FontSize="12" Margin="0,0,20,0"
-                               Cursor="Help"/>
+                            ToolTip="{Binding FullVersion, Mode=OneWay}"
+                            Foreground="{DynamicResource SidebarTextSecondaryBrush}"
+                            FontSize="12" Margin="0,0,20,0"
+                            Cursor="Help"/>
                     <TextBlock Text="{Binding CurrentTime, Mode=OneWay}"
-                               Foreground="{DynamicResource SidebarTextBrush}"
-                               FontSize="12" Margin="0 0 10 0"/>
+                            Foreground="{DynamicResource SidebarTextBrush}"
+                            FontSize="12" Margin="0 0 10 0"/>
                 </StackPanel>
             </Grid>
         </Border>

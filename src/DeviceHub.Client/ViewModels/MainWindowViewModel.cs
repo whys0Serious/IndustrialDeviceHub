@@ -70,6 +70,9 @@ namespace DeviceHub.Client.ViewModels
 
             // 默认导航
             _navigation.NavigateTo<DeviceListViewModel>();
+
+            //强制刷新用户信息
+            RefreshUserInfo();
         }
 
         /// <summary>
@@ -104,18 +107,29 @@ namespace DeviceHub.Client.ViewModels
         {
             _session.Clear();
 
-            // 主窗口不关、不隐藏，保持在后台
+            // 隐藏主窗口（用户看不到中间状态）
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow?.Hide();
+
+            // 清空导航状态（避免残留上一个用户的页面）
+            _navigation.Clear();
+
+            // 弹登录窗
             var loginWindow = App.Services.GetRequiredService<LoginView>();
             var loginResult = loginWindow.ShowDialog();
 
             if (loginResult == true)
             {
-                // 登录成功 → 刷新主窗口上的用户信息
+                //登录成功：导航到默认页 + 刷新用户信息 + 显示主窗口
+                _navigation.NavigateTo<DeviceListViewModel>();
                 RefreshUserInfo();
+                mainWindow?.Show();
+                mainWindow?.Activate();
             }
             else
             {
-                // 用户取消 → 直接回到主界面
+                //取消 → 退出程序
+                Application.Current.Shutdown();
             }
         }
         public void RefreshUserInfo()

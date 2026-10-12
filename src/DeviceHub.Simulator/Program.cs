@@ -6,9 +6,9 @@ using System.Net.Sockets;
 //配置
 var devices = new[]
 {
-    new { SlaveId = (byte)1, Name = "温度传感器1",  BaseTemp = 250, BasePress = 0,   BaseSpeed = 0 },
-    new { SlaveId = (byte)2, Name = "压力传感器1",  BaseTemp = 0,   BasePress = 100, BaseSpeed = 0 },
-    new { SlaveId = (byte)3, Name = "1号主电机",    BaseTemp = 450, BasePress = 0,   BaseSpeed = 1200 }
+    new { SlaveId = (byte)1, Name = "CNC-01 加工中心", BaseTemp = 650,  BasePress = 800,  BaseSpeed = 1500 },
+    new { SlaveId = (byte)2, Name = "注塑机-A1",      BaseTemp = 750,  BasePress = 1000, BaseSpeed = 1200 },
+    new { SlaveId = (byte)3, Name = "1号主电机",      BaseTemp = 550,  BasePress = 600,  BaseSpeed = 1450 }
 };
 
 Console.WriteLine("=========================================");

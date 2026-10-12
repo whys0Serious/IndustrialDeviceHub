@@ -7,6 +7,7 @@
         xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
         xmlns:hc="https://handyorg.github.io/handycontrol"              
         mc:Ignorable="d"
+        IsDialog="True"               
         Title="登录 - IndustrialDeviceHub"
                        Height="400" Width="420"
                        WindowStartupLocation="CenterScreen"

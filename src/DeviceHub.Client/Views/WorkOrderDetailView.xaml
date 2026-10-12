@@ -13,7 +13,8 @@
         ResizeMode="CanResize"
         ShowInTaskbar="False"
         ShowMinimize="False"
-        ShowMaximize="False">
+        ShowMaximize="False"
+        IsDialog="True">
     <Grid Margin="20">
         <!-- 加载中 -->
         <TextBlock Text="加载中..."

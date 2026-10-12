@@ -73,7 +73,15 @@ namespace DeviceHub.Controls.Controls
         public static readonly DependencyProperty ShowCloseProperty =
             DependencyProperty.Register(nameof(ShowClose), typeof(bool), typeof(TitleBarControl),
                 new PropertyMetadata(true));
+        public static readonly DependencyProperty CornerRadiusProperty =
+         DependencyProperty.Register(nameof(CornerRadius), typeof(CornerRadius),
+        typeof(TitleBarControl), new PropertyMetadata(new CornerRadius(12, 12, 0, 0)));
 
+        public CornerRadius CornerRadius
+        {
+            get => (CornerRadius)GetValue(CornerRadiusProperty);
+            set => SetValue(CornerRadiusProperty, value);
+        }
         public bool ShowClose
         {
             get => (bool)GetValue(ShowCloseProperty);

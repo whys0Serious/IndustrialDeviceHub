@@ -23,5 +23,9 @@ namespace DeviceHub.Client.Services
         /// 按ViewModel类型导航
         /// </summary>
         void NavigateTo(Type viewModelType);
+        /// <summary>
+        /// 清空导航
+        /// </summary>
+        void Clear();
     }
 }

@@ -95,6 +95,8 @@ namespace DeviceHub.Client.ViewModels
 
         private bool _isInitializing = true;
 
+        private bool _isUpdatingFilters;
+        private readonly SemaphoreSlim _loadLock = new(1, 1);
         public async Task InitializeAsync()
         {
             _isInitializing = true;
@@ -104,14 +106,14 @@ namespace DeviceHub.Client.ViewModels
 
         partial void OnSelectedStatusChanged(AlarmStatusOption? value)
         {
-            if (_isInitializing) return;
+            if (_isInitializing || _isUpdatingFilters) return;
             CurrentPageIndex = 1;
             _ = LoadAsync();
         }
 
         partial void OnSelectedTypeChanged(AlarmTypeOption? value)
         {
-            if (_isInitializing) return;
+            if (_isInitializing || _isUpdatingFilters) return;
             CurrentPageIndex = 1;
             _ = LoadAsync();
         }
@@ -119,6 +121,17 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task RefreshAsync()
         {
+            _isUpdatingFilters = true;
+            try
+            {
+                SelectedStatus = StatusOptions.First();
+                SelectedType = TypeOptions.First();
+                CurrentPageIndex = 1;
+            }
+            finally
+            {
+                _isUpdatingFilters = false;
+            }
             await LoadAsync();
         }
 
@@ -127,6 +140,7 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task PageUpdatedAsync()
         {
+            if (IsLoading) return;
             await LoadAsync();
         }
 
@@ -170,6 +184,7 @@ namespace DeviceHub.Client.ViewModels
 
         private async Task LoadAsync()
         {
+            if (!await _loadLock.WaitAsync(0)) return;
             IsLoading = true;
             ErrorMessage = null;
 
@@ -196,6 +211,7 @@ namespace DeviceHub.Client.ViewModels
             finally
             {
                 IsLoading = false;
+                _loadLock.Release();
             }
         }
     }

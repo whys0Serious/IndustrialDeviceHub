@@ -29,8 +29,11 @@ namespace DeviceHub.Infrastructure.Communication
         {
             try
             {
-                //先断开旧连接
-                await DisconnectAsync(ct);
+                //只在有旧连接时才断开（幂等快速）
+                if (_tcpClient != null || _master != null)
+                {
+                    await DisconnectAsync(ct);
+                }
 
                 _tcpClient = new TcpClient();
 
@@ -49,39 +52,61 @@ namespace DeviceHub.Infrastructure.Communication
                 _master.Transport.Retries = 2;
 
                 _logger.LogInformation("Modbus 连接成功：{Host}:{Port}", host, port);
+                _firstFailureLogged = false;   //成功后重置失败标记
                 return true;
             }
             catch (OperationCanceledException)
             {
-                _logger.LogWarning("Modbus 连接超时：{Host}:{Port}", host, port);
+                LogConnectFailure(host, port, isTimeout: true);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Modbus 连接失败：{Host}:{Port}", host, port);
+                LogConnectFailure(host, port, isTimeout: false, ex);
                 return false;
             }
         }
+        private bool _firstFailureLogged = false;
 
+        private void LogConnectFailure(string host, int port, bool isTimeout, Exception? ex = null)
+        {
+            var msg = isTimeout
+                ? "Modbus 连接超时：{Host}:{Port}"
+                : "Modbus 连接失败：{Host}:{Port}";
+
+            if (!_firstFailureLogged)
+            {
+                _logger.LogWarning(ex, msg + "（后续失败将降为 Debug）", host, port);
+                _firstFailureLogged = true;
+            }
+            else
+            {
+                _logger.LogDebug(ex, msg, host, port);
+            }
+        }
         public Task DisconnectAsync(CancellationToken ct = default)
         {
-            try
+            var wasConnected = _tcpClient != null || _master != null;
+
+            //每个资源独立 try-catch，保证尽最大释放全部
+            try { _master?.Dispose(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "释放 Modbus Master 异常"); }
+
+            try { _tcpClient?.Close(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "关闭 TCP 连接异常"); }
+
+            try { _tcpClient?.Dispose(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "释放 TCP 客户端异常"); }
+
+            _master = null;
+            _tcpClient = null;
+
+            //只在确实断开过时打日志，避免刷屏
+            if (wasConnected)
             {
-                _master?.Dispose();
-                _tcpClient?.Close();
-                _tcpClient?.Dispose();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Modbus 断开连接时发生异常");
-            }
-            finally
-            {
-                _master = null;
-                _tcpClient = null;
+                _logger.LogInformation("Modbus 已断开连接");
             }
 
-            _logger.LogInformation("Modbus 已断开连接");
             return Task.CompletedTask;
         }
 

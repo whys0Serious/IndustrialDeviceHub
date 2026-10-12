@@ -32,5 +32,10 @@ namespace DeviceHub.Client.Services
             var vm = (ObservableObject)_services.GetRequiredService(viewModelType);
             CurrentViewModel = vm;
         }
+
+        public void Clear()
+        {
+            CurrentViewModel = null;
+        }
     }
 }

@@ -138,6 +138,7 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task SearchAsync()
         {
+            if (IsLoading) return;   //防重复触发
             CurrentPageIndex = 1;
             await LoadAsync();
         }
@@ -166,6 +167,7 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task PageUpdatedAsync()
         {
+            if (IsLoading) return;   //防重复触发
             await LoadAsync();
         }
 
@@ -275,8 +277,17 @@ namespace DeviceHub.Client.ViewModels
             }
         }
 
+        private readonly SemaphoreSlim _loadLock = new(1, 1);
         private async Task LoadAsync()
         {
+
+            // 已有查询在执行 → 直接跳过
+            if (!await _loadLock.WaitAsync(0))
+            {
+                System.Diagnostics.Debug.WriteLine("[WorkOrderList] 跳过并发查询");
+                return;
+            }
+
             IsLoading = true;
             ErrorMessage = null;
 
@@ -309,6 +320,7 @@ namespace DeviceHub.Client.ViewModels
             finally
             {
                 IsLoading = false;
+                _loadLock.Release();   //释放锁
             }
         }
     }

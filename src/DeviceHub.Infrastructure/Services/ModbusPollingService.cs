@@ -40,6 +40,8 @@ public class ModbusPollingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        //立即让出，Host不等待本服务的首次连接
+        await Task.Yield();
         if (!_options.Enabled)
         {
             _logger.LogInformation("Modbus 轮询已禁用");
@@ -49,18 +51,16 @@ public class ModbusPollingService : BackgroundService
         _logger.LogInformation("Modbus 轮询服务启动：{Host}:{Port}, 每 {Interval}ms 一次",
             _options.Host, _options.Port, _options.PollingIntervalMs);
 
-        await EnsureConnectedAsync(stoppingToken);
-
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(_options.PollingIntervalMs));
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
+                //每次循环只尝试一次连接，失败等下个tick
                 if (!_communication.IsConnected)
                 {
-                    _logger.LogWarning("Modbus 连接断开，尝试重连...");
-                    await EnsureConnectedAsync(stoppingToken);
+                    await TryConnectOnceAsync(stoppingToken);
                 }
 
                 if (_communication.IsConnected)
@@ -92,18 +92,32 @@ public class ModbusPollingService : BackgroundService
         await _communication.DisconnectAsync();
     }
 
-    private async Task EnsureConnectedAsync(CancellationToken ct)
+    /// <summary>
+    /// 尝试一次连接；失败不阻塞，交由下一个 tick 再试。
+    /// 仿真器未启动时，客户端仍能正常进入主界面。
+    /// </summary>
+    private async Task TryConnectOnceAsync(CancellationToken ct)
     {
-        for (int attempt = 1; attempt <= 3; attempt++)
+        try
         {
             var connected = await _communication.ConnectAsync(_options.Host, _options.Port, ct);
-            if (connected) return;
-
-            _logger.LogWarning("第 {Attempt} 次连接失败，3 秒后重试", attempt);
-            await Task.Delay(3000, ct);
+            if (connected)
+            {
+                _logger.LogInformation("Modbus 已连接 {Host}:{Port}", _options.Host, _options.Port);
+            }
+            else
+            {
+                _logger.LogDebug("Modbus 连接失败，下个周期重试");
+            }
         }
-
-        _logger.LogError("Modbus 连接失败（已重试 3 次）");
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Modbus 连接异常，下个周期重试");
+        }
     }
 
     /// <summary>

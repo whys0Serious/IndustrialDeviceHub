@@ -39,31 +39,93 @@
     
     <!--自定义窗口-->
     <Style TargetType="{x:Type controls:CustomWindow}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
         <Setter Property="WindowStyle" Value="None"/>
-        <Setter Property="ResizeMode" Value="CanResize"/>
+        <Setter Property="ResizeMode" Value="NoResize"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:CustomWindow}">
-                    <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="32"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <controls:TitleBarControl Grid.Row="0"
-                            WindowTitle="{TemplateBinding Title}"
-                            ShowMinimize="{TemplateBinding ShowMinimize}"
-                            ShowMaximize="{TemplateBinding ShowMaximize}"
-                            ShowClose="{TemplateBinding ShowClose}"
-                            LeftContent="{TemplateBinding LeftContent}"
-                            RightContent="{TemplateBinding RightContent}"/>
+                    <!-- 弹窗时 Margin=16 给阴影留空间；主窗体时 0 -->
+                    <Grid x:Name="RootGrid" Margin="0">
 
-                            <ContentPresenter Grid.Row="1"/>
+                        <!-- ★ 阴影承载层（主窗体时无阴影，弹窗时有） -->
+                        <Grid x:Name="ShadowHost" Background="Transparent">
+                            <Grid.Effect>
+                                <DropShadowEffect x:Name="ShadowEffect"
+                                                  BlurRadius="32"
+                                                  ShadowDepth="4"
+                                                  Direction="270"
+                                                  Opacity="0.25"
+                                                  Color="#1E293B"/>
+                            </Grid.Effect>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="32"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <controls:TitleBarControl x:Name="TitleBar"
+                                    CornerRadius="0"
+                                    WindowTitle="{TemplateBinding Title}"
+                                    ShowMinimize="{TemplateBinding ShowMinimize}"
+                                    ShowMaximize="{TemplateBinding ShowMaximize}"
+                                    ShowClose="{TemplateBinding ShowClose}"
+                                    LeftContent="{TemplateBinding LeftContent}"
+                                    RightContent="{TemplateBinding RightContent}"/>
+
+                                <!-- ★ 内容区：背景由触发器决定；圆角由触发器决定 -->
+                                <Border x:Name="ContentBorder"
+                                        Grid.Row="1"
+                                        Background="{DynamicResource BackgroundBrush}"
+                                        CornerRadius="0">
+                                    <ContentPresenter HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Stretch"/>
+                                </Border>
+                            </Grid>
                         </Grid>
-                    </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- ★ 弹窗模式：透明窗口，用圆角 + 阴影 -->
+                        <Trigger Property="IsDialog" Value="True">
+                            <!-- 内容区背景：弹窗用 SurfaceBrush（白） -->
+                            <Setter TargetName="ContentBorder" Property="Background"
+                                    Value="{DynamicResource SurfaceBrush}"/>
+                            <Setter TargetName="ContentBorder" Property="CornerRadius" Value="0,0,5,5"/>
+                            <Setter TargetName="TitleBar" Property="CornerRadius" Value="5,5,0,0"/>
+
+                            <!-- 阴影：弹窗有 -->
+                            <Setter TargetName="RootGrid" Property="Margin" Value="16"/>
+                        </Trigger>
+
+                        <!-- 弹窗无阴影 -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsDialog" Value="True"/>
+                                <Condition Property="HasShadow" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ShadowHost" Property="Effect" Value="{x:Null}"/>
+                            <Setter TargetName="RootGrid" Property="Margin" Value="0"/>
+                        </MultiTrigger>
+
+                        <!-- 主窗体模式：非透明窗口，直角，无阴影 -->
+                        <Trigger Property="IsDialog" Value="False">
+                            <Setter TargetName="ContentBorder" Property="Background"
+                                    Value="{DynamicResource BackgroundBrush}"/>
+                            <Setter TargetName="ContentBorder" Property="CornerRadius" Value="0"/>
+                            <Setter TargetName="TitleBar" Property="CornerRadius" Value="0"/>
+                            <Setter TargetName="ShadowHost" Property="Effect" Value="{x:Null}"/>
+                            <Setter TargetName="RootGrid" Property="Margin" Value="0"/>
+                        </Trigger>
+
+                        <!-- 最大化：贴边、去阴影、去圆角 -->
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="ShadowHost" Property="Effect" Value="{x:Null}"/>
+                            <Setter TargetName="RootGrid" Property="Margin" Value="0"/>
+                            <Setter TargetName="ContentBorder" Property="CornerRadius" Value="0"/>
+                            <Setter TargetName="TitleBar" Property="CornerRadius" Value="0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -127,21 +127,32 @@ namespace DeviceHub.Client.ViewModels
         [RelayCommand]
         private async Task SearchAsync()
         {
+            if (IsLoading) return;
             CurrentPageIndex = 1;
-            //await LoadStatisticsAsync();//数据变化了 统计要刷新
             await LoadPageAsync();
         }
 
+        private bool _isResetting;
         /// <summary>
         /// 重置筛选条件
         /// </summary>
         [RelayCommand]
         private async Task ResetAsync()
         {
-            SearchKeyword = null;
-            SelectedStatus = DeviceStatusOption.All;
-            SelectedCategory = CategoryOptions.FirstOrDefault();
-            CurrentPageIndex = 1;
+            _isResetting = true;   //开始重置，屏蔽setter触发
+            try
+            {
+                SearchKeyword = null;
+                SelectedStatus = DeviceStatusOption.All;
+                SelectedCategory = CategoryOptions.FirstOrDefault();
+                CurrentPageIndex = 1;
+            }
+            finally
+            {
+                _isResetting = false;   //重置完成
+            }
+
+            //执行一次查询
             await LoadStatisticsAsync();
             await LoadPageAsync();
         }
@@ -250,8 +261,16 @@ namespace DeviceHub.Client.ViewModels
             }
         }
 
+        private readonly SemaphoreSlim _loadLock = new(1, 1);
         private async Task LoadPageAsync()
         {
+
+            //已有查询在执行 → 直接跳过（不排队）
+            if (!await _loadLock.WaitAsync(0))
+            {
+                System.Diagnostics.Debug.WriteLine("[DeviceList] 上一次查询未完成，跳过本次");
+                return;
+            }
             IsLoading = true;
             ErrorMessage = null;
 
@@ -284,6 +303,7 @@ namespace DeviceHub.Client.ViewModels
             finally
             {
                 IsLoading = false;
+                _loadLock.Release();   // 释放锁
             }
         }
 
@@ -319,8 +339,8 @@ namespace DeviceHub.Client.ViewModels
         partial void OnSelectedStatusChanged(DeviceStatusOption? value)
         {
             //防止初始化时触发（CategoryOptions 还没加载）
-            if (_isInitializing) return;
-            _ = SearchAsync();;
+            if (_isInitializing || _isResetting) return;
+            _ = SearchAsync();
         }
 
         /// <summary>
@@ -328,7 +348,7 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
         partial void OnSelectedCategoryChanged(DeviceCategoryDto? value)
         {
-            if (_isInitializing) return;
+            if (_isInitializing || _isResetting) return;
             _ = SearchAsync();
         }
     }

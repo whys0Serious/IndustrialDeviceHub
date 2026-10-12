@@ -8,7 +8,9 @@
         Title="{Binding Title}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Height="500" Width="500">
+        Height="500" Width="500"
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
+        IsDialog="True">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -52,8 +54,8 @@
             <TextBlock Grid.Row="3" Grid.Column="0" Text="故障描述 *" VerticalAlignment="Top" Margin="0,5,10,15"/>
             <TextBox Grid.Row="3" Grid.Column="1"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                     AcceptsReturn="True" TextWrapping="Wrap"
-                     Height="200" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+                     AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"
+                     Height="200" Padding="8"/>
             <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                        Text="{Binding ErrorMessage}"
                        Foreground="Red" TextWrapping="Wrap"/>

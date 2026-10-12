@@ -6,14 +6,16 @@
         xmlns:local="clr-namespace:DeviceHub.Client.Views"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
-xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
-                       Title="{Binding Title}"
-                       Height="420" Width="450"
-                       WindowStartupLocation="CenterOwner"
-                       ResizeMode="NoResize"
-                       ShowInTaskbar="False"
-                       ShowMinimize="False"
-                       ShowMaximize="False">
+        xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
+        Title="{Binding Title}"
+        Height="420" Width="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowMinimize="False"
+        ShowMaximize="False"
+        IsDialog="True"
+        TextElement.Foreground="{DynamicResource TextPrimaryBrush}">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -42,7 +44,6 @@ xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Con
             <TextBlock Grid.Row="1" Grid.Column="0" Text="密码 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
             <TextBox Grid.Row="1" Grid.Column="1"
                      Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                     Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibility}}"
                      Height="32" VerticalContentAlignment="Center" Margin="0,0,0,15"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="显示名 *" VerticalAlignment="Center" Margin="0,0,10,15"/>
