@@ -199,6 +199,7 @@ namespace DeviceHub.Client.ViewModels
             if (string.IsNullOrWhiteSpace(Code)) { ErrorMessage = "设备编号不能为空"; return false; }
             if (SelectedStatus == null) { ErrorMessage = "请选择设备状态"; return false; }
             if (SelectedCategory == null) { ErrorMessage = "请选择设备分类"; return false; }
+            if (Remark?.Length > 200){ ErrorMessage = $"备注不能超过 200 字符（当前 {Remark.Length} 字符）"; return false; }
             return true;
         }
     }

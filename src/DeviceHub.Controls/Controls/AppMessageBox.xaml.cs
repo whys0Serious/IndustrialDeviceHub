@@ -40,9 +40,24 @@ public partial class AppMessageBox : CustomWindow
     {
         var box = new AppMessageBox
         {
-            Title = title,
-            Owner = Application.Current.MainWindow
+            Title = title
         };
+
+        //Owner 判空 + 自检
+        var owner = Application.Current.MainWindow;
+        if (owner != null && !ReferenceEquals(owner, box))
+        {
+            try
+            {
+                box.Owner = owner;
+            }
+            catch (ArgumentException)
+            {
+                //Owner设置失败就忽略——不影响弹窗显示
+                System.Diagnostics.Debug.WriteLine("[AppMessageBox] Owner 设置失败，忽略");
+            }
+        }
+
 
         box.MessageText.Text = message;
         box.ApplyIcon(type);

@@ -88,6 +88,7 @@ namespace DeviceHub.Client.ViewModels
         private bool Validate()
         {
             if (string.IsNullOrWhiteSpace(Name)) { ErrorMessage = "分类名称不能为空"; return false; }
+            if (Description?.Length > 200) { ErrorMessage = $"描述不能超过 200 字符（当前 {Description.Length} 字符）"; return false; }
             return true;
         }
     }

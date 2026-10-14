@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
 using DeviceHub.Client.Services;
 using DeviceHub.Core.DTOs;
+using DeviceHub.Core.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
@@ -65,6 +66,11 @@ public partial class AiChatViewModel : ObservableObject
             ErrorMessage = "请输入故障描述";
             return;
         }
+        if (FaultDescription.Length > 200)
+        {
+            ErrorMessage = $"故障描述不能超过200个字符,（当前 {FaultDescription.Length} 字符）";
+            return;
+        }
 
         IsLoading = true;
         ErrorMessage = null;
@@ -85,9 +91,14 @@ public partial class AiChatViewModel : ObservableObject
             OnPropertyChanged(nameof(HasResult));
             OnPropertyChanged(nameof(HasSimilarCases));
         }
-        catch (Exception ex)
+        catch (BusinessException ex)
         {
             ErrorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AiChat] 系统异常：{ex}");
+            ErrorMessage = "诊断失败，请稍后重试";
         }
         finally
         {

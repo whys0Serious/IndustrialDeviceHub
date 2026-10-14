@@ -5,11 +5,13 @@ using DeviceHub.Controls.Controls;
 using DeviceHub.Core.DTOs;
 using DeviceHub.Core.Interfaces;
 using DeviceHub.Infrastructure.Extensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Windows;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace DeviceHub.Client;
 
@@ -63,6 +65,20 @@ public partial class App : Application
             }
             //登录成功后再显示主窗口
             mainWindow.Show();
+        }
+        catch (SqlException ex)
+        {
+            //数据库异常
+           var result= MessageBox.Show(
+                "无法连接数据库，请检查：\n\n" +
+                "1. SQL Server 服务是否已启动\n" +
+                "   （services.msc → SQL Server (MSSQLSERVER) → 启动）\n" +
+                "2. 连接字符串是否正确\n\n" +
+                $"技术细节：{ex.Message}",
+                "数据库连接失败",
+                 MessageBoxButton.OK, //重试
+                 MessageBoxImage.Warning);
+            Shutdown(-1);
         }
         catch (Exception ex)
         {

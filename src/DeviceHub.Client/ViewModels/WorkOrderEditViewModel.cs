@@ -155,6 +155,7 @@ namespace DeviceHub.Client.ViewModels
             if (string.IsNullOrWhiteSpace(Description)) { ErrorMessage = "故障描述不能为空"; return false; }
             if (SelectedPriority == null) { ErrorMessage = "请选择优先级"; return false; }
             if (!_editingId.HasValue && SelectedDevice == null) { ErrorMessage = "请选择设备"; return false; }
+            if (Description?.Length > 800) { ErrorMessage = $"描述不能超过 800 字符（当前 {Description.Length} 字符）"; return false; }
             return true;
         }
     }
