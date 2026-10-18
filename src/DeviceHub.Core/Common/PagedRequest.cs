@@ -11,7 +11,7 @@ namespace DeviceHub.Core.Common
     public class PagedRequest
     {
         private int _pageIndex = 1;
-        private int _pageSize = 20;
+        private int _pageSize = 10;
 
         /// <summary>
         /// 页码

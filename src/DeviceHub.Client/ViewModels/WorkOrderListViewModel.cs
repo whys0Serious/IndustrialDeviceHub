@@ -59,7 +59,7 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
 
         [ObservableProperty] private int _currentPageIndex = 1;
-        [ObservableProperty] private int _pageSize = 20;
+        [ObservableProperty] private int _pageSize = 10;
         [ObservableProperty] private int _totalPages;
         [ObservableProperty] private int _totalCount;
 

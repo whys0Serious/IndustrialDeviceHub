@@ -18,7 +18,7 @@ namespace DeviceHub.Core.DTOs
         /// <summary>
         /// 每页大小
         /// </summary>
-        public int PageSize { get; set; } = 20;
+        public int PageSize { get; set; } = 10;
 
         /// <summary>
         /// 关键字（匹配名称或编号）

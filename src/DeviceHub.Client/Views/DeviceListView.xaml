@@ -1,242 +1,361 @@
-﻿<UserControl x:Class="DeviceHub.Client.Views.DeviceListView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DeviceHub.Client.Views"
-             mc:Ignorable="d"
-             Background="{DynamicResource SurfaceBrush}"
-             TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
-             xmlns:hc="https://handyorg.github.io/handycontrol"
-             xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
-            >
-    <Grid Margin="10">
+﻿<UserControl
+    x:Class="DeviceHub.Client.Views.DeviceListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:DeviceHub.Controls.Controls;assembly=DeviceHub.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:DeviceHub.Client.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
+    mc:Ignorable="d">
+    <Grid Margin="20,20,20,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <!--  标题  -->
+            <RowDefinition Height="Auto" />
+            <!--  搜索栏卡片  -->
+            <RowDefinition Height="*" />
+            <!--  表格卡片  -->
         </Grid.RowDefinitions>
-        <!-- 标题 -->
-        <TextBlock Grid.Row="0" Text="设备列表" FontSize="24" FontWeight="Bold" Margin="0 5 0 0"/>
-        <!-- 工具栏 -->
-        <Border Grid.Row="1"
-            Padding="10" CornerRadius="4" Margin="0,0,0,5">
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,10"
+            FontSize="22"
+            FontWeight="Bold"
+            Foreground="{DynamicResource TextPrimaryBrush}"
+            Text="设备列表" />
+        <!--  工具栏  -->
+        <Border
+            Grid.Row="1"
+            Margin="0,0,0,10"
+            Padding="16"
+            Background="{DynamicResource SurfaceBrush}"
+            CornerRadius="6">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="10"
+                    Opacity="0.05"
+                    ShadowDepth="1"
+                    Color="#000000" />
+            </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <!-- 搜索框-->
-                    <ColumnDefinition Width="1.1*" MinWidth="200"/>
-                    <!-- 状态-->
-                    <ColumnDefinition Width="0.6*" MinWidth="100"/>
-                    <!-- 分类-->
-                    <ColumnDefinition Width="0.8*" MinWidth="120"/>
-                    <!-- 重置按钮-->
-                    <ColumnDefinition Width="Auto"/>
-                    <!-- 右侧按钮组-->
-                    <ColumnDefinition Width="Auto"/>
-                    <!-- 弹性间隔 -->
-                    <ColumnDefinition Width="*"/>
+                    <!--  搜索框  -->
+                    <ColumnDefinition Width="0.7*" MinWidth="200" />
+                    <!--  状态  -->
+                    <ColumnDefinition Width="0.5*" MinWidth="100" />
+                    <!--  分类  -->
+                    <ColumnDefinition Width="0.5*" MinWidth="120" />
+                    <!--  右侧按钮组  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  弹性间隔  -->
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- 搜索框 -->
-                <hc:SearchBar Grid.Column="0"
-                      Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                      Command="{Binding SearchCommand}"
-                      hc:InfoElement.Title="关键字："
-                      hc:InfoElement.TitleWidth="60"
-                      hc:InfoElement.TitlePlacement="Left"
-                      hc:InfoElement.ShowClearButton="True"
-                      VerticalAlignment="Center"
-                      Margin="0,0,10,0"
-                      Style="{StaticResource SearchBarExtend}" />
+                <!--  搜索框  -->
+                <hc:SearchBar
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    hc:InfoElement.ShowClearButton="True"
+                    hc:InfoElement.Title="关键字："
+                    hc:InfoElement.TitlePlacement="Left"
+                    hc:InfoElement.TitleWidth="55"
+                    Command="{Binding SearchCommand}"
+                    Style="{StaticResource SearchBarExtend}"
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- 状态筛选 -->
+                <!--  状态筛选  -->
                 <Grid Grid.Column="1" Margin="0,0,10,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="状态：" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <ComboBox Grid.Column="1"
-                      ItemsSource="{Binding StatusOptions}"
-                      SelectedItem="{Binding SelectedStatus}"
-                      DisplayMemberPath="Display"
-                      VerticalAlignment="Center"/>
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Center"
+                        Text="状态：" />
+                    <ComboBox
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        DisplayMemberPath="Display"
+                        ItemsSource="{Binding StatusOptions}"
+                        SelectedItem="{Binding SelectedStatus}" />
                 </Grid>
 
-                <!-- 分类筛选 -->
+                <!--  分类筛选  -->
                 <Grid Grid.Column="2" Margin="0,0,10,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="分类：" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <ComboBox Grid.Column="1"
-                      ItemsSource="{Binding CategoryOptions}"
-                      SelectedItem="{Binding SelectedCategory}"
-                      DisplayMemberPath="Name"
-                      VerticalAlignment="Center"/>
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Center"
+                        Text="分类：" />
+                    <ComboBox
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding CategoryOptions}"
+                        SelectedItem="{Binding SelectedCategory}" />
                 </Grid>
-                <!-- 重置按钮 -->
-                <Button Grid.Column="3"
-                Content="刷新"
-                Command="{Binding ResetCommand}"
-                MinWidth="80" Height="30" Margin="0,0,5,0"
-                VerticalAlignment="Center"
-                BorderThickness="1"
-                Background="{DynamicResource SurfaceBrush}"
-                Foreground="{DynamicResource TextPrimaryBrush}"
-                BorderBrush="{DynamicResource BorderBrush}"/>
 
-                <!-- 右侧操作按钮 -->
-                <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="+ 新增" Command="{Binding CreateCommand}"
-                            Background="{DynamicResource PrimaryBrush}"
-                            Foreground="{DynamicResource SidebarTextBrush}"
-                            MinWidth="80" Height="30" Margin="0,0,5,0"
-                            />
-                            <Button Content="✎ 编辑" Command="{Binding EditCommand}"
-                            MinWidth="80" Height="30"
-                            Background="{DynamicResource SurfaceBrush}"
-                            Foreground="{DynamicResource PrimaryBrush}"
-                            BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1" Margin="0 0 5 0"/>
-                            <Button Content="🗑 删除" Command="{Binding DeleteCommand}"
-                            MinWidth="80" Height="30"
-                            Foreground="{DynamicResource DangerBrush}"
-                            BorderBrush="{DynamicResource DangerBrush}"
-                            BorderThickness="1"/>
+                <!--  右侧操作按钮  -->
+                <StackPanel
+                    Grid.Column="4"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  重置按钮  -->
+                    <Button
+                        Height="30"
+                        MinWidth="80"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        Command="{Binding ResetCommand}"
+                        Content="刷新"
+                        Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <Button
+                        Height="30"
+                        MinWidth="80"
+                        Margin="0,0,5,0"
+                        Background="{DynamicResource PrimaryBrush}"
+                        Command="{Binding CreateCommand}"
+                        Content="+ 新增"
+                        Foreground="{DynamicResource SidebarTextBrush}" />
+                    <Button
+                        Height="30"
+                        MinWidth="80"
+                        Margin="0,0,5,0"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        Command="{Binding EditCommand}"
+                        Content="✎ 编辑"
+                        Foreground="{DynamicResource PrimaryBrush}" />
+                    <Button
+                        Height="30"
+                        MinWidth="80"
+                        BorderBrush="{DynamicResource DangerBrush}"
+                        BorderThickness="1"
+                        Command="{Binding DeleteCommand}"
+                        Content="🗑 删除"
+                        Foreground="{DynamicResource DangerBrush}" />
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- 数据区-->
-        <Grid Grid.Row="2">
-            <!-- 加载中 -->
-            <TextBlock Text="加载中..."
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    FontSize="16" Foreground="Gray"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
-
-            <!-- 空数据 -->
-            <TextBlock Text="暂无数据"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    FontSize="16" Foreground="Gray">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsLoading}" Value="False"/>
-                                    <Condition Binding="{Binding HasData}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+        <!--  数据  -->
+        <Border
+            Grid.Row="2"
+            Padding="1"
+            Background="{DynamicResource SurfaceBrush}"
+            CornerRadius="6">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="10"
+                    Opacity="0.05"
+                    ShadowDepth="1"
+                    Color="#000000" />
+            </Border.Effect>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                    <!--  上半部分：数据展示区  -->
+                    <RowDefinition Height="Auto" />
+                    <!--  下半部分：分页统计区  -->
                 </Grid.RowDefinitions>
-                <DataGrid ItemsSource="{Binding Devices}"
-                       SelectedItem="{Binding SelectedDevice}"
-                       AutoGenerateColumns="False"
-                       IsReadOnly="True"
-                       CanUserAddRows="False"
-                       CanUserResizeColumns="False" 
-                       RowHeight="35"
-                       Background="{DynamicResource SurfaceBrush}"
-                      BorderBrush="{DynamicResource BorderLightBrush}"
-                      BorderThickness="1">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
-                        <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="200"/>
-                        <DataGridTextColumn Header="设备编号" Binding="{Binding Code}" Width="150"/>
-                        <DataGridTemplateColumn Header="状态" Width="100">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <controls:DeviceStatusIndicator Status="{Binding Status}" DotSize="20" Width="40" Height="30" HorizontalAlignment="Left"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="分类" Binding="{Binding CategoryName}" Width="150"/>
-                        <DataGridTemplateColumn Header="备注" Width="*" CanUserSort="False">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Remark}"
-                                       TextTrimming="CharacterEllipsis"
-                                       VerticalAlignment="Center"
-                                       Margin="4,0">
-                                        <TextBlock.ToolTip>
-                                            <TextBlock Text="{Binding Remark}"
-                                           TextWrapping="Wrap"
-                                           MaxWidth="200"/>
-                                        </TextBlock.ToolTip>
-                                     </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm}" Width="150"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <!--分页-->
-                <hc:Pagination HorizontalAlignment="Right"
-                                   Grid.Row="1"
-                                   Margin="0 5 0 0"
-                                    VerticalAlignment="Center"
-                                    MaxPageCount="{Binding TotalPages}"
-                                    PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}"
-                                    DataCountPerPage="{Binding PageSize}"
-                                    IsJumpEnabled="True">
-                    <hc:Interaction.Triggers>
-                        <hc:EventTrigger EventName="PageUpdated">
-                            <hc:EventToCommand Command="{Binding PageUpdatedCommand}"/>
-                        </hc:EventTrigger>
-                    </hc:Interaction.Triggers>
-                </hc:Pagination>
-            </Grid>
-        </Grid>
-
-        <!-- 底部：左统计 + 右分页 -->
-        <Border Grid.Row="3" Margin="0,15,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <!-- 左：状态统计 -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock VerticalAlignment="Center">
-            <Run Text="总数：" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="Bold"/>
-            <Run Text="{Binding TotalDevices, Mode=OneWay}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <!--  统计 + 分页  -->
+                    </Grid.RowDefinitions>
+                    <!--  DataGrid  -->
+                    <DataGrid
+                        Grid.Row="0"
+                        AutoGenerateColumns="False"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderLightBrush}"
+                        BorderThickness="0"
+                        CanUserAddRows="False"
+                        CanUserResizeColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding Devices}"
+                        RowHeight="35"
+                        SelectedItem="{Binding SelectedDevice}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="60"
+                                Binding="{Binding Id}"
+                                Header="Id" />
+                            <DataGridTextColumn
+                                Width="200"
+                                Binding="{Binding Name}"
+                                Header="设备名称" />
+                            <DataGridTextColumn
+                                Width="150"
+                                Binding="{Binding Code}"
+                                Header="设备编号" />
+                            <DataGridTemplateColumn Width="100" Header="状态">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:DeviceStatusIndicator
+                                            Width="40"
+                                            Height="30"
+                                            HorizontalAlignment="Left"
+                                            DotSize="20"
+                                            Status="{Binding Status}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn
+                                Width="150"
+                                Binding="{Binding CategoryName}"
+                                Header="分类" />
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="备注">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="4,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Remark}"
+                                            TextTrimming="CharacterEllipsis">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock
+                                                    MaxWidth="200"
+                                                    Text="{Binding Remark}"
+                                                    TextWrapping="Wrap" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn
+                                Width="150"
+                                Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm}"
+                                Header="创建时间" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <!--  加载中  -->
+                    <hc:LoadingCircle
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource LoadingCircleLight}"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}" />
+                    <!--  空数据  -->
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Foreground="Gray"
+                        Text="暂无数据">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsLoading}" Value="False" />
+                                            <Condition Binding="{Binding HasData}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
                     </TextBlock>
+                    <!--  左统计 + 右分页  -->
+                    <Border
+                        Grid.Row="1"
+                        Padding="16,10"
+                        BorderBrush="{DynamicResource BorderLightBrush}"
+                        BorderThickness="0,1,0,0">
+                        <Grid>
+                            <!--  左侧统计  -->
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!--  左：状态统计  -->
+                                    <StackPanel
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center">
+                                            <Run
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                                Text="总数：" />
+                                            <Run
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                                Text="{Binding TotalDevices, Mode=OneWay}" />
+                                        </TextBlock>
 
-                    <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
-            <Run Text="运行中：" Foreground="{DynamicResource TextSecondaryBrush}"/>
-            <Run Text="{Binding RunningCount, Mode=OneWay}" Foreground="{DynamicResource SuccessBrush}" FontWeight="Bold"/>
-                    </TextBlock>
+                                        <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
+                                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="运行中：" />
+                                            <Run
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource SuccessBrush}"
+                                                Text="{Binding RunningCount, Mode=OneWay}" />
+                                        </TextBlock>
 
-                    <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
-            <Run Text="报警：" Foreground="{DynamicResource TextSecondaryBrush}"/>
-            <Run Text="{Binding AlarmCount, Mode=OneWay}"  Foreground="{DynamicResource DangerBrush}" FontWeight="Bold"/>
-                    </TextBlock>
+                                        <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
+                                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="报警：" />
+                                            <Run
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource DangerBrush}"
+                                                Text="{Binding AlarmCount, Mode=OneWay}" />
+                                        </TextBlock>
 
-                    <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
-            <Run Text="停止：" Foreground="{DynamicResource TextSecondaryBrush}"/>
-            <Run Text="{Binding StoppedCount, Mode=OneWay}" Foreground="{DynamicResource TextDisabledBrush}" FontWeight="Bold"/>
-                    </TextBlock>
-                </StackPanel>
-                <!-- 中：错误提示 -->
-                <TextBlock Grid.Column="1"
-               Text="{Binding ErrorMessage}"
-               Foreground="{DynamicResource DangerBrush}"
-               VerticalAlignment="Center"
-               HorizontalAlignment="Center"/>
-
+                                        <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">
+                                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="停止：" />
+                                            <Run
+                                                FontWeight="Bold"
+                                                Foreground="{DynamicResource TextDisabledBrush}"
+                                                Text="{Binding StoppedCount, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <!--  中：错误提示  -->
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource DangerBrush}"
+                                        Text="{Binding ErrorMessage}" />
+                                </Grid>
+                            </StackPanel>
+                            <!--  分页  -->
+                            <hc:Pagination
+                                Grid.Row="1"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                DataCountPerPage="{Binding PageSize}"
+                                IsJumpEnabled="True"
+                                MaxPageCount="{Binding TotalPages}"
+                                PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}">
+                                <hc:Interaction.Triggers>
+                                    <hc:EventTrigger EventName="PageUpdated">
+                                        <hc:EventToCommand Command="{Binding PageUpdatedCommand}" />
+                                    </hc:EventTrigger>
+                                </hc:Interaction.Triggers>
+                            </hc:Pagination>
+                        </Grid>
+                    </Border>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
