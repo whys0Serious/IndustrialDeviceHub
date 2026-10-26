@@ -12,7 +12,7 @@
     xmlns:vm="clr-namespace:DeviceHub.Client.ViewModels"
     x:Name="MainWindowRoot"
     Width="1200"
-    Height="700"
+    Height="720"
     Background="{DynamicResource SidebarBackgroundBrush}"
     ShowMaximize="True"
     WindowStartupLocation="CenterScreen"
@@ -23,13 +23,13 @@
             <TextBlock
                 Margin="0,0,5,0"
                 VerticalAlignment="Center"
-                FontSize="12"
+                FontSize="{DynamicResource FontSizeSmall}"
                 Foreground="{DynamicResource TextPrimaryBrush}"
                 Text="{Binding CurrentUserName}" />
             <TextBlock
                 Margin="0,0,15,0"
                 VerticalAlignment="Center"
-                FontSize="11"
+                FontSize="{DynamicResource FontSizeSmall}"
                 Foreground="{DynamicResource TextSecondaryBrush}"
                 Text="{Binding CurrentUserRole}" />
 
@@ -41,7 +41,7 @@
                 Command="{Binding LogoutCommand}"
                 Content="🚪退出"
                 Cursor="Hand"
-                FontSize="12"
+                FontSize="{DynamicResource FontSizeSmall}"
                 Foreground="{DynamicResource TitleBarForegroundBrush}" />
 
             <Button
@@ -51,7 +51,7 @@
                 Command="{Binding ToggleThemeCommand}"
                 Content="👚"
                 Cursor="Hand"
-                FontSize="16"
+                FontSize="{DynamicResource FontSizeSmall}"
                 Foreground="{DynamicResource TitleBarForegroundBrush}"
                 ToolTip="切换主题" />
         </StackPanel>
@@ -67,7 +67,7 @@
                 <TextBlock
                     Margin="0,9,0,30"
                     HorizontalAlignment="Center"
-                    FontSize="25"
+                    FontSize="{DynamicResource FontSizeFTitle}"
                     FontWeight="Bold"
                     Foreground="{DynamicResource SidebarTextBrush}"
                     Text="设备中枢" />
@@ -176,7 +176,7 @@
                     <!--  版本+时间  -->
                     <StackPanel
                         Grid.Column="2"
-                        Margin="0,8,0,10"
+                        Margin="0,8,0,5"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <TextBlock

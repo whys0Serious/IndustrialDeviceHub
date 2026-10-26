@@ -22,7 +22,7 @@
         <TextBlock
             Grid.Row="0"
             Margin="0,0,0,10"
-            FontSize="22"
+            FontSize="{DynamicResource FontSizeTitle}"
             FontWeight="Bold"
             Foreground="{DynamicResource TextPrimaryBrush}"
             Text="设备列表" />
@@ -62,7 +62,7 @@
                     hc:InfoElement.ShowClearButton="True"
                     hc:InfoElement.Title="关键字："
                     hc:InfoElement.TitlePlacement="Left"
-                    hc:InfoElement.TitleWidth="55"
+                    hc:InfoElement.TitleWidth="65"
                     Command="{Binding SearchCommand}"
                     Style="{StaticResource SearchBarExtend}"
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />

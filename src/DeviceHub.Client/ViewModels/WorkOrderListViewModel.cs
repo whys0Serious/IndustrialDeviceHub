@@ -239,17 +239,16 @@ namespace DeviceHub.Client.ViewModels
             }
         }
 
-        [RelayCommand(CanExecute = nameof(CanViewDetail))]
-        private async Task ViewDetailAsync()
+        [RelayCommand]
+        private async Task ViewDetailAsync(WorkOrderDto? workOrder)
         {
-            if (SelectedWorkOrder == null) return;
+            if (workOrder == null) return;
 
-            var id = SelectedWorkOrder.Id;
+            var id = workOrder.Id;
             _dialogService.ShowDialog<WorkOrderDetailViewModel, WorkOrderDetailView>(
                 vm => _ = vm.InitializeAsync(id));
             await LoadAsync();
         }
-        private bool CanViewDetail() => SelectedWorkOrder != null;
         private bool CanEdit() => SelectedWorkOrder != null && SelectedWorkOrder.Status != WorkOrderStatus.Closed;
         private bool CanStart() => SelectedWorkOrder?.Status == WorkOrderStatus.Pending;
         private bool CanClose() => SelectedWorkOrder?.Status == WorkOrderStatus.Processing;
