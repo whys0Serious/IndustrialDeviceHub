@@ -45,6 +45,7 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
+
             // Service
             services.AddScoped<IDeviceService, DeviceService>();//设备信息服务
             services.AddScoped<IDeviceCategoryService, DeviceCategoryService>();//设备分类服务
@@ -53,7 +54,8 @@ namespace DeviceHub.Infrastructure.Extensions
             services.AddScoped<IWorkOrderService, WorkOrderService>();//工单服务
             services.AddScoped<IAiKnowledgeService, AiKnowledgeService>();//AI知识库服务
             services.AddScoped<IAuthService, AuthService>();//认证服务
-
+            services.AddScoped<IRecipeService, RecipeService>();//参数配置
+            services.AddScoped<IJobExecutionService, JobExecutionService>();//整机工作流
 
             // 通信
             services.AddSingleton<IDeviceCommunication, ModbusDeviceCommunication>();

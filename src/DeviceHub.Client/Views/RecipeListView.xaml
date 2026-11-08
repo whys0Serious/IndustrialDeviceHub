@@ -1,0 +1,93 @@
+﻿<UserControl
+    x:Class="DeviceHub.Client.Views.RecipeListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:DeviceHub.Client.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="20,20,20,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,10"
+            FontSize="{DynamicResource FontSizeTitle}"
+            FontWeight="Bold"
+            Foreground="{DynamicResource TextPrimaryBrush}"
+            Text="配方管理" />
+        <!--  顶部操作栏  -->
+        <Border
+          Grid.Row="1"
+          Margin="0,0,0,10"
+          Padding="16"
+          Background="{DynamicResource SurfaceBrush}"
+          CornerRadius="6">
+            <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+                <Button
+                Width="110"
+                Height="32"
+                hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                Command="{Binding AddRecipeCommand}"
+                Content="新增配方"
+                Style="{StaticResource ButtonPrimary}" />
+                <Button
+                Width="80"
+                Height="32"
+                Margin="10,0,0,0"
+                Command="{Binding EditRecipeCommand}"
+                Content="✎ 编辑"
+                Style="{StaticResource ButtonDefault}" />
+                <Button
+                Width="80"
+                Height="32"
+                Margin="10,0,0,0"
+                Command="{Binding DeleteRecipeCommand}"
+                Content="🗑 删除"
+                Style="{StaticResource ButtonDanger}" />
+            </StackPanel>
+        </Border>
+        <!--  配方列表  -->
+        <DataGrid
+            Grid.Row="2"
+            AutoGenerateColumns="False"
+            Background="{DynamicResource SurfaceBrush}"
+            CanUserAddRows="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding Recipes}"
+            SelectedItem="{Binding SelectedRecipe}">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding Name}"
+                    Header="配方名称" />
+                <DataGridTextColumn
+                    Width="150"
+                    Binding="{Binding TargetTemperature}"
+                    Header="目标温度 (℃)" />
+                <DataGridTextColumn
+                    Width="150"
+                    Binding="{Binding TargetPressure}"
+                    Header="目标压力 (kPa)" />
+                <DataGridTextColumn
+                    Width="150"
+                    Binding="{Binding TargetSpeed}"
+                    Header="目标转速 (RPM)" />
+                <DataGridTextColumn
+                    Width="180"
+                    Binding="{Binding CreatedAt, StringFormat='yyyy-MM-dd HH:mm'}"
+                    Header="创建时间" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

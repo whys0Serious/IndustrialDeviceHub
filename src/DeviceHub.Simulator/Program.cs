@@ -38,7 +38,7 @@ foreach (var dev in devices)
     var dataStore = new DefaultSlaveDataStore();
 
     //初始化10个保持寄存器
-    for (ushort i = 0; i < 10; i++)
+    for (ushort i = 0; i < 20; i++)
         dataStore.HoldingRegisters.WritePoints(i, new ushort[] { 0 });
 
     var slave = factory.CreateSlave(dev.SlaveId, dataStore);
@@ -55,8 +55,45 @@ _ = Task.Run(async () =>
 
     while (true)
     {
-        foreach (var s in slaves)
+        for (int i = 0; i < slaves.Count; i++)
         {
+            var s = slaves[i];
+            bool update = false;
+
+            var targetTemRegs = s.Store.HoldingRegisters.ReadPoints(10, 1);
+                //如果目标温度寄存器有值，则将其作为基准温度
+            if(targetTemRegs[0] != s.BaseTemp && targetTemRegs[0] != 0 && targetTemRegs.Length > 0)
+            {
+                s.BaseTemp = targetTemRegs[0];
+                slaves[i] = s;
+                update = true;
+            }
+            var targetTemPresss = s.Store.HoldingRegisters.ReadPoints(11, 1);
+
+                //如果目标压力寄存器有值，则将其作为基准压力
+            if(targetTemPresss[0] != s.BasePress && targetTemPresss[0] !=0 && targetTemPresss.Length>0)
+            {
+                s.BasePress = targetTemPresss[0];
+                slaves[i] = s;
+                update = true;
+            }
+            
+            var targetTemSpeeds = s.Store.HoldingRegisters.ReadPoints(12, 1);
+
+            //如果目标转速寄存器有值，则将其作为基准转速
+            if(targetTemSpeeds[0] != s.BaseSpeed && targetTemSpeeds[0] !=0 && targetTemSpeeds.Length>0)
+            {
+                s.BaseSpeed = targetTemSpeeds[0];
+                slaves[i] = s;
+                update = true;
+            }
+            
+            if(update)
+            {
+                slaves[i] = s;
+                Console.WriteLine($"从站 {s.SlaveId} 更新基准值：温度={s.BaseTemp}, 压力={s.BasePress}, 转速={s.BaseSpeed}");
+            }
+
             //温度
             var temp = s.BaseTemp > 0
                 ? (ushort)(s.BaseTemp + random.Next(-20, 21))

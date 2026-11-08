@@ -90,7 +90,14 @@
                     Content="分类管理"
                     GroupName="MainMenu"
                     Style="{StaticResource SidebarRadioButtonStyle}" />
-
+                <RadioButton
+                    Height="40"
+                    Margin="0,5"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type vm:RecipeListViewModel}"
+                    Content="配方管理"
+                    GroupName="MainMenu"
+                    Style="{StaticResource SidebarRadioButtonStyle}" />
                 <RadioButton
                     Height="40"
                     Margin="0,5"

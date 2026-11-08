@@ -143,11 +143,10 @@
                     <Button
                         Height="30"
                         MinWidth="80"
-                        BorderBrush="{DynamicResource DangerBrush}"
                         BorderThickness="1"
                         Command="{Binding DeleteCommand}"
                         Content="🗑 删除"
-                        Foreground="{DynamicResource DangerBrush}" />
+                        Style="{DynamicResource ButtonDanger}" />
                 </StackPanel>
             </Grid>
         </Border>

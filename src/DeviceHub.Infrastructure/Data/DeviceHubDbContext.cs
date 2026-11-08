@@ -49,6 +49,15 @@ namespace DeviceHub.Infrastructure.Data
         public DbSet<User> Users => Set<User>();
 
         /// <summary>
+        /// 工艺配方表
+        /// </summary>
+        public DbSet<Recipe> Recipes { get; set; }
+        /// <summary>
+        /// 整机作业记录表
+        /// </summary>
+        public DbSet<JobRecord> JobRecords { get; set; }
+
+        /// <summary>
         /// 模型创建时调用
         /// ApplyConfigurationsFromAssembly会自动扫描当前程序集所有实现了IEntityTypeConfiguration的类
         /// 新增实体配置不用改 DbContext

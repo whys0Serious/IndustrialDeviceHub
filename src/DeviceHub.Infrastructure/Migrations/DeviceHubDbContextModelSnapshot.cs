@@ -158,6 +158,106 @@ namespace DeviceHub.Infrastructure.Migrations
                     b.ToTable("DeviceCategories", (string)null);
                 });
 
+            modelBuilder.Entity("DeviceHub.Core.Entities.JobRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("AvgPress")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AvgSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AvgTemp")
+                        .HasColumnType("float");
+
+                    b.Property<int>("DeviceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExceptionReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsQualified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MaxPress")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxTemp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinTemp")
+                        .HasColumnType("float");
+
+                    b.Property<string>("RecipeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TargetPress")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TargetSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TargetTemp")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobRecords");
+                });
+
+            modelBuilder.Entity("DeviceHub.Core.Entities.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TargetPressure")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TargetSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TargetTemperature")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Recipes");
+                });
+
             modelBuilder.Entity("DeviceHub.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
