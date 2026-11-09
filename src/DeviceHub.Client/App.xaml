@@ -48,6 +48,9 @@
             <DataTemplate DataType="{x:Type vm:RecipeListViewModel}">
                 <views:RecipeListView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:JobExecutionViewModel}">
+                <views:JobExecutionView />
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -24,6 +24,16 @@ namespace DeviceHub.Infrastructure.Services
         public async Task CreateAsync(int deviceId, AlarmType type, string message,
             double triggerValue, double thresholdValue, CancellationToken ct = default)
         {
+            //报警抑制（防刷屏落库）
+            // 在配置文件中读取 SuppressIntervalSeconds（默认 30 秒）
+            // 如果过去30秒内该设备已经报过同类型的警报，直接 return不写数据库
+            int suppressSeconds = 30;
+            bool hasRecent = await _repo.HasRecentAlarmAsync(deviceId, type, suppressSeconds, ct);
+            if (hasRecent)
+            {
+                return;
+            }
+
             var alarm = new Alarm
             {
                 DeviceId = deviceId,
@@ -96,7 +106,29 @@ namespace DeviceHub.Infrastructure.Services
         {
             var alarm = await _repo.GetActiveAlarmAsync(deviceId, type, ct);
             if (alarm == null) return;
+            //死区判定（防抖）
+            //triggerValue 是当前实时值，thresholdValue 是报警阈值
+            //如果当前值只是在阈值边缘徘徊，不允许恢复
+            //假设死区是阈值变化 2.0 (温度) 或 50 (压力)
+            double deadband = type == AlarmType.TemperatureHigh ? 2.0 : 50.0;
+            bool inDeadband = false;
 
+            if (type == AlarmType.TemperatureHigh || type == AlarmType.PressureHigh)
+            {
+                // 高限报警：如果当前值依然高于 (阈值 - 死区)，说明还没完全降下来，拦截恢复
+                if (alarm.TriggerValue > (alarm.ThresholdValue - deadband)) inDeadband = true;
+            }
+            else if (type == AlarmType.SpeedLow)
+            {
+                // 低限报警：如果当前值依然低于 (阈值 + 死区)，拦截恢复
+                if (alarm.TriggerValue < (alarm.ThresholdValue + deadband)) inDeadband = true;
+            }
+
+            if (inDeadband)
+            {
+                // 处于死区，不更新状态，让它保持在报警状态
+                return;
+            }
             alarm.ResolvedAt = DateTime.Now;
             await _repo.UpdateAsync(alarm, ct);
 

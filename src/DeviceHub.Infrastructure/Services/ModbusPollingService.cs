@@ -10,6 +10,9 @@ using Microsoft.Extensions.Options;
 
 namespace DeviceHub.Infrastructure.BackgroundServices;
 
+/// <summary>
+/// Modbus 轮询服务
+/// </summary>
 public class ModbusPollingService : BackgroundService
 {
     private readonly IDeviceCommunication _communication;
@@ -37,7 +40,10 @@ public class ModbusPollingService : BackgroundService
         _alarmOptions = alarmOptions.Value;
         _logger = logger;
     }
-
+    //死区设定
+    private const double TempDeadband = 2.0;    // 温度回落2度才恢复
+    private const double PressDeadband = 20.0;  // 压力回落20kPa才恢复
+    private const double SpeedDeadband = 50.0;  // 转速回升50RPM才恢复
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         //立即让出，Host不等待本服务的首次连接
@@ -186,6 +192,7 @@ public class ModbusPollingService : BackgroundService
                 data, AlarmType.TemperatureHigh,
                 data.Temperature > _alarmOptions.TemperatureMax,
                 data.Temperature, _alarmOptions.TemperatureMax,
+                TempDeadband,true,
                 $"温度过高：当前 {data.Temperature:F1}℃，超过上限 {_alarmOptions.TemperatureMax:F1}℃",
                 ct);
 
@@ -193,6 +200,7 @@ public class ModbusPollingService : BackgroundService
                 data, AlarmType.PressureHigh,
                 data.Pressure > _alarmOptions.PressureMax,
                 data.Pressure, _alarmOptions.PressureMax,
+                PressDeadband,true,
                 $"压力过高：当前 {data.Pressure:F0}kPa，超过上限 {_alarmOptions.PressureMax:F0}kPa",
                 ct);
 
@@ -200,6 +208,7 @@ public class ModbusPollingService : BackgroundService
                 data, AlarmType.SpeedLow,
                 data.Speed > 0 && data.Speed < _alarmOptions.SpeedMin,
                 data.Speed, _alarmOptions.SpeedMin,
+                SpeedDeadband, false,
                 $"转速过低：当前 {data.Speed}RPM，低于下限 {_alarmOptions.SpeedMin:F0}RPM",
                 ct);
         }
@@ -209,12 +218,34 @@ public class ModbusPollingService : BackgroundService
         }
     }
 
+    /// <summary>
+    /// 检查单个报警并处理死区逻辑
+    /// </summary>
     private async Task CheckOneAsync(
         RealtimeDataDto data, AlarmType type,
-        bool isActive, double currentValue, double threshold, string message,
+        bool isExceeded, double currentValue, double threshold,
+        double deadband, bool isHighAlarm, string message,
         CancellationToken ct)
     {
-        var (triggered, resolved) = _alarmTracker.Update(data.DeviceId, type, isActive);
+        //获取上一次的状态机结果
+        var (triggered, resolved) = _alarmTracker.Update(data.DeviceId, type, isExceeded);
+
+        //引入死区（防抖）处理
+        // 如果目前状态机判定为“恢复”（即从 true 变 false）
+        if (resolved)
+        {
+            // 判断是否真的脱离了死区
+            bool inDeadband = isHighAlarm
+                ? currentValue > (threshold - deadband)  // 如果是高限报警：当前值如果在 (阈值-死区) 之上，说明还在死区内
+                : currentValue < (threshold + deadband); // 如果是低限报警：当前值如果在 (阈值+死区) 之下，说明还在死区内
+
+            if (inDeadband)
+            {
+                // 值还在死区内（虽然没超标，但也没完全恢复），强行把状态机改回触发状态，并且拦截恢复
+                _alarmTracker.Update(data.DeviceId, type, true);
+                return;
+            }
+        }
 
         if (!triggered && !resolved) return;
 
@@ -223,8 +254,7 @@ public class ModbusPollingService : BackgroundService
 
         if (triggered)
         {
-            await alarmService.CreateAsync(data.DeviceId, type, message,
-                currentValue, threshold, ct);
+            await alarmService.CreateAsync(data.DeviceId, type, message, currentValue, threshold, ct);
         }
         else if (resolved)
         {

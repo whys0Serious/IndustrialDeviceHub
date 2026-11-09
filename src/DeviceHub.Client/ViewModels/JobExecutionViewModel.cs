@@ -43,12 +43,20 @@ namespace DeviceHub.Client.ViewModels
             _jobService = jobService;
         }
 
-        
-        /// <summary>
-        /// 当前步骤（0:配置 1:运行 2:结果）
-        /// </summary>
-        [ObservableProperty] private int _currentStep = 0;
+        // ==========================================
+        // 状态控制（由 CurrentStep 驱动）
+        // ==========================================
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsConfiguring))]
+        [NotifyPropertyChangedFor(nameof(IsRunning))]
+        [NotifyPropertyChangedFor(nameof(IsFinished))]
+        private int _currentStep = 0;
+        public bool IsConfiguring => CurrentStep == 0;
+        public bool IsRunning => CurrentStep == 1;
+        public bool IsFinished => CurrentStep == 2;
 
+        private int _stableCount = 0; // 记录连续达标的次数
+        private const int MaxJobSeconds = 20; // 防止死机，设定最大运行时长 20 秒
         /// <summary>
         /// 状态提示文本
         /// </summary>
@@ -94,6 +102,32 @@ namespace DeviceHub.Client.ViewModels
         /// </summary>
         [ObservableProperty] private bool _isQualified;
 
+        // 是否允许启动
+        // 没选配方不能启动，正在运行也不能重复启动
+        private bool CanStartJob() => SelectedRecipe != null && IsConfiguring;
+
+        // 当配方或者当前步骤改变时，通知按钮刷新状态
+        partial void OnSelectedRecipeChanged(Recipe? value)
+        {
+            StartJobCommand.NotifyCanExecuteChanged();
+        }
+
+        partial void OnCurrentStepChanged(int value)
+        {
+            StartJobCommand.NotifyCanExecuteChanged();
+        }
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <returns></returns>
+
+        public async Task InitializeAsync()
+        {
+            //_isInitializing = true;   // 开始初始化
+            await LoadRecipesAsync();
+            //_isInitializing = false;  // 初始化完成
+        }
+
         [RelayCommand]
         private async Task LoadRecipesAsync()
         {
@@ -106,7 +140,7 @@ namespace DeviceHub.Client.ViewModels
         /// <summary>
         /// 启动作业
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStartJob))]
         private async Task StartJobAsync()
         {
             if (SelectedRecipe == null) { StatusMessage = "请先选择配方"; return; }
@@ -169,7 +203,19 @@ namespace DeviceHub.Client.ViewModels
                 Progress = Math.Min(100, (elapsed / JobDurationSeconds) * 100);
 
                 // 到达时长则结束
-                if (elapsed >= JobDurationSeconds)
+                if (Math.Abs(CurrentTemp - SelectedRecipe.TargetTemperature) <= 1.0)
+                {
+                    _stableCount++;
+                    StatusMessage = $"设备参数已达标，稳定确认中 ({_stableCount}/5)...";
+                }
+                else
+                {
+                    _stableCount = 0; // 只要波动超出 1℃，稳定计数清零
+                    StatusMessage = "设备正在升温/调整中...";
+                }
+
+                // 如果连续 5 秒稳定，或者超时 20 秒，都结束任务
+                if (_stableCount >= 5 || elapsed >= MaxJobSeconds)
                 {
                     _timer?.Stop();
                     await CompleteJobAsync();
@@ -190,7 +236,7 @@ namespace DeviceHub.Client.ViewModels
         private async Task CompleteJobAsync()
         {
             CurrentStep = 2;
-            StatusMessage = "设备运行结束，正在生成履历...";
+            StatusMessage = "设备运行结束，正在生成记录...";
 
             if (_temps.Count == 0) return;
 
@@ -237,6 +283,7 @@ namespace DeviceHub.Client.ViewModels
         private void Reset()
         {
             _timer?.Stop();
+            _stableCount = 0;
             CurrentStep = 0;
             StatusMessage = "请选择配方";
             Progress = 0;
