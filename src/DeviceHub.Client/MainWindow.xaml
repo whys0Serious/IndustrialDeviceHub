@@ -107,6 +107,14 @@
                         Height="40"
                         Margin="0,5"
                         Command="{Binding NavigateCommand}"
+                        CommandParameter="{x:Type vm:JobHistoryViewModel}"
+                        Content="加工履历"
+                        GroupName="MainMenu"
+                        Style="{StaticResource SidebarRadioButtonStyle}" />
+                    <RadioButton
+                        Height="40"
+                        Margin="0,5"
+                        Command="{Binding NavigateCommand}"
                         CommandParameter="{x:Type vm:RecipeListViewModel}"
                         Content="配方管理"
                         GroupName="MainMenu"
@@ -182,6 +190,7 @@
                     Orientation="Horizontal" />
                 <cont:AlarmBanner
                     Grid.Column="0"
+                    Margin="5"
                     VerticalAlignment="Center"
                     Count="{Binding AlarmBanner.UnacknowledgedCount}"
                     IsOpen="{Binding AlarmBanner.HasAlarms}"

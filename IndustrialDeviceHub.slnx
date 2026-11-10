@@ -5,6 +5,7 @@
     <Project Path="src/DeviceHub.Simulator/DeviceHub.Simulator.csproj" />
   </Folder>
   <Folder Name="/解决方案项/">
+    <File Path="D:/工具/应用/download/README.md" />
     <File Path="Directory.Build.props" />
     <File Path="gitignore" />
     <File Path="README.md" />

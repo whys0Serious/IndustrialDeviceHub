@@ -1,4 +1,5 @@
-﻿using DeviceHub.Core.Entities;
+﻿using DeviceHub.Core.Common;
+using DeviceHub.Core.Entities;
 using DeviceHub.Core.Interfaces;
 using DeviceHub.Core.Models;
 using DeviceHub.Infrastructure.Data;
@@ -53,10 +54,26 @@ namespace DeviceHub.Infrastructure.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task<List<JobRecord>> GetJobHistoryAsync(int deviceId)
-            => await _db.JobRecords
-                .Where(r => r.DeviceId == deviceId)
+        public async Task<PagedResult<JobRecord>> GetJobHistoryAsync(int deviceId, int pageIndex, int pageSize)
+        {
+            var query = _db.JobRecords.Where(r => r.DeviceId == deviceId);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
                 .OrderByDescending(r => r.StartTime)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<JobRecord>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = pageIndex,
+                PageSize = pageSize
+            };
+        }
+           
     }
 }

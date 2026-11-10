@@ -1,4 +1,5 @@
-﻿using DeviceHub.Core.Entities;
+﻿using DeviceHub.Core.Common;
+using DeviceHub.Core.Entities;
 using DeviceHub.Core.Interfaces;
 using DeviceHub.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,32 @@ namespace DeviceHub.Infrastructure.Services
 
         public RecipeService(DeviceHubDbContext db) => _db = db;
 
-        public async Task<List<Recipe>> GetAllAsync()
-            => await _db.Recipes.OrderByDescending(r => r.CreatedAt).ToListAsync();
+        public async Task<PagedResult<Recipe>> GetPagedAsync(string? keyword, int pageIndex, int pageSize)
+        {
+            var query = _db.Recipes.AsQueryable();
+
+            // 支持按配方名称模糊搜索
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(r => r.Name.Contains(keyword.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Recipe>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = pageIndex,
+                PageSize = pageSize
+            };
+        }
+
 
         public async Task AddAsync(Recipe recipe)
         {
@@ -46,6 +71,14 @@ namespace DeviceHub.Infrastructure.Services
                 _db.Recipes.Remove(recipe);
                 await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<Recipe>> GetAllAsync()
+        {
+            return await _db.Recipes
+            .AsNoTracking()
+            .OrderBy(r => r.Name)
+            .ToListAsync();
         }
     }
 }

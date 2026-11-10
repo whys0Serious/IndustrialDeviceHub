@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Windows.Media;
 
 namespace DeviceHub.Client.ViewModels
 {
@@ -19,33 +20,96 @@ namespace DeviceHub.Client.ViewModels
     {
         private readonly IJobExecutionService _jobService;
 
+        // 并发防抖锁（防止用户疯狂点击刷新或下一页导致 DbContext 崩溃）
+        private readonly SemaphoreSlim _loadLock = new(1, 1);
         /// <summary>
         /// 作业历史记录列表
         /// </summary>
         public ObservableCollection<JobRecord> JobRecords { get; } = new();
 
+        // 分页控制属性
+        [ObservableProperty] private int _currentPageIndex = 1;
+        [ObservableProperty] private int _pageSize = 10;
+        [ObservableProperty] private int _totalPages;
+        [ObservableProperty] private int _totalCount;
+
+        // 状态控制
+        [ObservableProperty] private bool _isLoading;
+        [ObservableProperty] private string? _errorMessage;
         /// <summary>
         /// 当前选中的作业记录
         /// </summary>
-        [ObservableProperty] private JobRecord? _selectedJob;
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportReportCommand))]
+        private JobRecord? _selectedJob;
 
+        /// 是否选中了记录（用于控制导出按钮状态）
+        public bool IsRecordSelected => SelectedJob != null;
+        public bool HasData => JobRecords.Count > 0;
         public JobHistoryViewModel(IJobExecutionService jobService) => _jobService = jobService;
 
-        /// <summary>
-        /// 加载历史记录
-        /// </summary>
-        [RelayCommand]
-        private async Task LoadAsync()
+        public async Task InitializeAsync()
         {
-            var list = await _jobService.GetJobHistoryAsync(1); // 假设设备Id固定为1
-            JobRecords.Clear();
-            foreach (var r in list) JobRecords.Add(r);
+            await LoadPageAsync();
+        }
+
+        [RelayCommand]
+        private async Task RefreshAsync()
+        {
+            CurrentPageIndex = 1;
+            await LoadPageAsync();
+        }
+
+        [RelayCommand]
+        private async Task PageUpdatedAsync()
+        {
+            await LoadPageAsync();
+        }
+
+        /// <summary>
+        /// 翻页或刷新时加载数据
+        /// </summary>
+        private async Task LoadPageAsync()
+        {
+            // 加锁防抖
+            if (!await _loadLock.WaitAsync(0))
+            {
+                System.Diagnostics.Debug.WriteLine("[JobHistory] 上一次查询未完成，跳过本次");
+                return;
+            }
+
+            IsLoading = true;
+            ErrorMessage = null;
+
+            try
+            {
+                
+                var result = await _jobService.GetJobHistoryAsync(1, CurrentPageIndex, PageSize);
+
+                JobRecords.Clear();
+                foreach (var r in result.Items) JobRecords.Add(r);
+
+                TotalCount = result.TotalCount;
+                TotalPages = result.TotalPages;
+                CurrentPageIndex = result.Page;
+
+                OnPropertyChanged(nameof(HasData));
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"加载失败：{ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+                _loadLock.Release();
+            }
         }
 
         /// <summary>
         /// 导出/打印工艺流转卡
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(IsRecordSelected))]
         private void ExportReport()
         {
             if (SelectedJob == null) return;
@@ -80,7 +144,7 @@ namespace DeviceHub.Client.ViewModels
             report.AppendLine("====================================");
             report.AppendLine("操作员签字：__________   质检员签字：__________");
 
-            // 2. 保存至桌面
+            // 保存至桌面
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var filePath = System.IO.Path.Combine(desktopPath, $"{SelectedJob.JobNo}_工艺.txt");
             System.IO.File.WriteAllText(filePath, report.ToString());

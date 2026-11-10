@@ -25,69 +25,134 @@
             Text="配方管理" />
         <!--  顶部操作栏  -->
         <Border
-          Grid.Row="1"
-          Margin="0,0,0,10"
-          Padding="16"
-          Background="{DynamicResource SurfaceBrush}"
-          CornerRadius="6">
-            <StackPanel
             Grid.Row="1"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
+            Margin="0,0,0,10"
+            Padding="16"
+            Background="{DynamicResource SurfaceBrush}"
+            CornerRadius="6">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <!--  搜索框  -->
+                <hc:SearchBar
+                    Width="320"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    hc:InfoElement.ShowClearButton="True"
+                    hc:InfoElement.Title="关键字："
+                    hc:InfoElement.TitlePlacement="Left"
+                    hc:InfoElement.TitleWidth="65"
+                    Command="{Binding SearchCommand}"
+                    Style="{StaticResource SearchBarExtend}"
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
-                Width="110"
-                Height="32"
-                hc:IconElement.Geometry="{StaticResource AddGeometry}"
-                Command="{Binding AddRecipeCommand}"
-                Content="新增配方"
-                Style="{StaticResource ButtonPrimary}" />
+                    Width="110"
+                    Height="32"
+                    hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                    Command="{Binding AddRecipeCommand}"
+                    Content="新增配方"
+                    Style="{StaticResource ButtonPrimary}" />
                 <Button
-                Width="80"
-                Height="32"
-                Margin="10,0,0,0"
-                Command="{Binding EditRecipeCommand}"
-                Content="✎ 编辑"
-                Style="{StaticResource ButtonDefault}" />
+                    Width="80"
+                    Height="32"
+                    Margin="10,0,0,0"
+                    Command="{Binding EditRecipeCommand}"
+                    Content="✎ 编辑"
+                    Style="{StaticResource ButtonDefault}" />
                 <Button
-                Width="80"
-                Height="32"
-                Margin="10,0,0,0"
-                Command="{Binding DeleteRecipeCommand}"
-                Content="🗑 删除"
-                Style="{StaticResource ButtonDanger}" />
+                    Width="80"
+                    Height="32"
+                    Margin="10,0,0,0"
+                    Command="{Binding DeleteRecipeCommand}"
+                    Content="🗑 删除"
+                    Style="{StaticResource ButtonDanger}" />
             </StackPanel>
         </Border>
-        <!--  配方列表  -->
-        <DataGrid
+
+        <Border
             Grid.Row="2"
-            AutoGenerateColumns="False"
+            Padding="1"
             Background="{DynamicResource SurfaceBrush}"
-            CanUserAddRows="False"
-            IsReadOnly="True"
-            ItemsSource="{Binding Recipes}"
-            SelectedItem="{Binding SelectedRecipe}">
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="*"
-                    Binding="{Binding Name}"
-                    Header="配方名称" />
-                <DataGridTextColumn
-                    Width="150"
-                    Binding="{Binding TargetTemperature}"
-                    Header="目标温度 (℃)" />
-                <DataGridTextColumn
-                    Width="150"
-                    Binding="{Binding TargetPressure}"
-                    Header="目标压力 (kPa)" />
-                <DataGridTextColumn
-                    Width="150"
-                    Binding="{Binding TargetSpeed}"
-                    Header="目标转速 (RPM)" />
-                <DataGridTextColumn
-                    Width="180"
-                    Binding="{Binding CreatedAt, StringFormat='yyyy-MM-dd HH:mm'}"
-                    Header="创建时间" />
-            </DataGrid.Columns>
-        </DataGrid>
+            CornerRadius="6">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="10"
+                    Opacity="0.05"
+                    ShadowDepth="1"
+                    Color="#000000" />
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <!--  上半部分：数据展示区  -->
+                    <RowDefinition Height="Auto" />
+                    <!--  下半部分：分页统计区  -->
+                </Grid.RowDefinitions>
+                <!--  配方列表  -->
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderLightBrush}"
+                    BorderThickness="0"
+                    CanUserAddRows="False"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Recipes}"
+                    RowHeight="35"
+                    SelectedItem="{Binding SelectedRecipe}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Name}"
+                            Header="配方名称" />
+                        <DataGridTextColumn
+                            Width="150"
+                            Binding="{Binding TargetTemperature}"
+                            Header="目标温度 (℃)" />
+                        <DataGridTextColumn
+                            Width="150"
+                            Binding="{Binding TargetPressure}"
+                            Header="目标压力 (kPa)" />
+                        <DataGridTextColumn
+                            Width="150"
+                            Binding="{Binding TargetSpeed}"
+                            Header="目标转速 (RPM)" />
+                        <DataGridTextColumn
+                            Width="180"
+                            Binding="{Binding CreatedAt, StringFormat='yyyy-MM-dd HH:mm'}"
+                            Header="创建时间" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Border
+                    Grid.Row="1"
+                    Padding="16,10"
+                    BorderBrush="{DynamicResource BorderLightBrush}"
+                    BorderThickness="0,1,0,0">
+                    <Grid>
+                        <!--  统计数据  -->
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="Gray">
+                            <Run Text="共 " />
+                            <Run
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource PrimaryBrush}"
+                                Text="{Binding TotalCount}" />
+                            <Run Text=" 个配方" />
+                        </TextBlock>
+                        <hc:Pagination
+                            HorizontalAlignment="Right"
+                            DataCountPerPage="{Binding PageSize}"
+                            IsJumpEnabled="True"
+                            MaxPageCount="{Binding TotalPages}"
+                            PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}">
+                            <hc:Interaction.Triggers>
+                                <hc:EventTrigger EventName="PageUpdated">
+                                    <hc:EventToCommand Command="{Binding PageUpdatedCommand}" />
+                                </hc:EventTrigger>
+                            </hc:Interaction.Triggers>
+                        </hc:Pagination>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

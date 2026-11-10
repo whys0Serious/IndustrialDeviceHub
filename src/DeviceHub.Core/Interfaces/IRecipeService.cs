@@ -1,4 +1,5 @@
-﻿using DeviceHub.Core.Entities;
+﻿using DeviceHub.Core.Common;
+using DeviceHub.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,10 +11,16 @@ namespace DeviceHub.Core.Interfaces
     /// </summary>
     public interface IRecipeService
     {
+
         /// <summary>
         /// 获取所有配方
         /// </summary>
+        /// <returns></returns>
         Task<List<Recipe>> GetAllAsync();
+        /// <summary>
+        /// 分页获取所有配方
+        /// </summary>
+        Task<PagedResult<Recipe>> GetPagedAsync(string? keyword, int pageIndex, int pageSize);
 
         /// <summary>
         /// 新增配方

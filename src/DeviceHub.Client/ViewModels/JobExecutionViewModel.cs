@@ -174,8 +174,25 @@ namespace DeviceHub.Client.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage = $"启动失败：{ex.Message}";
-                CurrentStep = 0;
+                CurrentStep = 0; // 退回配置状态
+                if (ex is InvalidOperationException && ex.Message.Contains("未连接"))
+                {
+                    StatusMessage = "❌ 启动失败：设备处于离线状态，请检查网线或启动仿真器。";
+                }
+                else if (ex is System.Net.Sockets.SocketException || ex.InnerException is System.Net.Sockets.SocketException)
+                {
+                    StatusMessage = "❌ 启动失败：无法连接到设备，请检查网络配置或设备电源。";
+                }
+                else if (ex is TimeoutException || ex is TaskCanceledException)
+                {
+                    StatusMessage = "❌ 启动失败：设备通讯超时，请检查网络延迟。";
+                }
+                else
+                {
+                    //记录日志，给个通用提示
+                    StatusMessage = "❌ 启动失败：系统通讯异常，请联系管理员。";
+                    System.Diagnostics.Debug.WriteLine($"[作业启动失败] {ex.Message}");
+                }
             }
         }
 

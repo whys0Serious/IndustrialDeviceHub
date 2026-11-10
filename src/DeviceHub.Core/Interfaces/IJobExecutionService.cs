@@ -1,4 +1,5 @@
-﻿using DeviceHub.Core.Entities;
+﻿using DeviceHub.Core.Common;
+using DeviceHub.Core.Entities;
 using DeviceHub.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,6 @@ namespace DeviceHub.Core.Interfaces
         /// <summary>
         /// 获取历史作业履历
         /// </summary>
-        Task<List<JobRecord>> GetJobHistoryAsync(int deviceId);
+        Task<PagedResult<JobRecord>> GetJobHistoryAsync(int deviceId, int pageIndex, int pageSize);
     }
 }

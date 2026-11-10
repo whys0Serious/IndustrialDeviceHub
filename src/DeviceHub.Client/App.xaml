@@ -51,6 +51,9 @@
             <DataTemplate DataType="{x:Type vm:JobExecutionViewModel}">
                 <views:JobExecutionView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:JobHistoryViewModel}">
+                <views:JobHistoryView />
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
