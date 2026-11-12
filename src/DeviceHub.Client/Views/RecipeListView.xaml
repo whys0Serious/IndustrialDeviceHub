@@ -42,7 +42,8 @@
                     hc:InfoElement.TitleWidth="65"
                     Command="{Binding SearchCommand}"
                     Style="{StaticResource SearchBarExtend}"
-                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                    TextElement.Foreground="{DynamicResource TextPrimaryBrush}" />
                 <Button
                     Width="110"
                     Height="32"

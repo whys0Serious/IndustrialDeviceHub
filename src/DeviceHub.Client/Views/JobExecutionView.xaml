@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="600"
     d:DesignWidth="900"
+    TextElement.Foreground="{DynamicResource TextPrimaryBrush}"
     mc:Ignorable="d">
     <Grid Margin="20,20,20,10">
         <Grid.RowDefinitions>

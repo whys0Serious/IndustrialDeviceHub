@@ -17,6 +17,20 @@
     ShowMinimize="False"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <controls:CustomWindow.LeftContent>
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+            <Image
+                Width="24"
+                Height="24"
+                Margin="0,0,5,0"
+                Source="/Assets/Icons/app.ico" />
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="{DynamicResource FontSizeSmall}"
+                Foreground="{DynamicResource TitleBarForegroundBrush}"
+                Text="{Binding Title, ElementName=MainWindowRoot}" />
+        </StackPanel>
+    </controls:CustomWindow.LeftContent>
     <Grid Margin="20,10,20,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -38,13 +52,13 @@
                 FontSize="{DynamicResource FontSizeTitle}"
                 FontWeight="Bold"
                 Foreground="{DynamicResource PrimaryBrush}"
-                Text="工业设备监控与运维管理平台" />
+                Text="工业设备工艺校准平台" />
             <TextBlock
                 Margin="0,6,0,0"
                 HorizontalAlignment="Center"
                 FontSize="12"
                 Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="IndustrialDeviceHub" />
+                Text="DeviceLedger" />
         </StackPanel>
 
         <!--  用户名  -->

@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- 版本号 -->
+    <Version>1.0.0</Version>
+    <AssemblyTitle>工业设备工艺校准平台</AssemblyTitle>
+    <!--logo-->
+    <ApplicationIcon>Assets\Icons\app.ico</ApplicationIcon>
+
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
@@ -9,7 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Icons\papirus.png" />
+    <None Remove="Assets\Icons\app.ico" />
+    <None Remove="Assets\Images\app.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,11 +41,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\Icons\papirus.png">
+    <Resource Include="Assets\Icons\app.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\app.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

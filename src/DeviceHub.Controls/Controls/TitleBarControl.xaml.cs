@@ -21,7 +21,68 @@ namespace DeviceHub.Controls.Controls
         public TitleBarControl()
         {
             InitializeComponent();
+            // 监听窗口状态变化
+            this.Loaded += TitleBarControl_Loaded;
         }
+        private void TitleBarControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var host = Window.GetWindow(this);
+            if (host != null)
+            {
+                // 订阅窗口状态改变事件
+                host.StateChanged += Host_StateChanged;
+
+                // 页面加载时，立刻初始化一次图标状态
+                UpdateMaximizeButtonState(host.WindowState);
+            }
+        }
+        private void Host_StateChanged(object? sender, EventArgs e)
+        {
+            if (sender is Window host)
+            {
+                UpdateMaximizeButtonState(host.WindowState);
+            }
+        }
+
+        private void UpdateMaximizeButtonState(WindowState state)
+        {
+            // 根据窗口状态，切换按钮的图标
+            if (state == WindowState.Maximized)
+            {
+                // 最大化时，显示“还原”图标
+                MaximizeButton.Content = new Path
+                {
+                    Data = (Geometry)FindResource("Icon_Restore"),
+                    Stroke = (Brush)FindResource("TitleBarForegroundBrush"), // 使用你的前景色
+                    StrokeThickness = 1.2,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+            }
+            else
+            {
+                // 正常时，显示“最大化”图标
+                MaximizeButton.Content = new Path
+                {
+                    Data = (Geometry)FindResource("Icon_Maximize"),
+                    Stroke = (Brush)FindResource("TitleBarForegroundBrush"),
+                    StrokeThickness = 1.2,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+            }
+        }
+        private void Maximize_Click(object sender, RoutedEventArgs e)
+        {
+            var host = Window.GetWindow(this);
+            if (host == null) return;
+
+            // 切换状态
+            host.WindowState = host.WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
         public static readonly DependencyProperty WindowTitleProperty =
            DependencyProperty.Register(nameof(WindowTitle), typeof(string), typeof(TitleBarControl),
                new PropertyMetadata(string.Empty));
@@ -93,9 +154,9 @@ namespace DeviceHub.Controls.Controls
         private void Minimize_Click(object sender, RoutedEventArgs e)
             => Host.WindowState = WindowState.Minimized;
 
-        private void Maximize_Click(object sender, RoutedEventArgs e)
+/*        private void Maximize_Click(object sender, RoutedEventArgs e)
             => Host.WindowState = Host.WindowState == WindowState.Maximized
-                ? WindowState.Normal : WindowState.Maximized;
+                ? WindowState.Normal : WindowState.Maximized;*/
 
         private void Close_Click(object sender, RoutedEventArgs e) => Host.Close();
     }

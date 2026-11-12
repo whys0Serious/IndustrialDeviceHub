@@ -50,8 +50,6 @@
                     <ColumnDefinition Width="0.5*" MinWidth="120" />
                     <!--  右侧按钮组  -->
                     <ColumnDefinition Width="Auto" />
-                    <!--  弹性间隔  -->
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <!--  搜索框  -->
@@ -65,7 +63,8 @@
                     hc:InfoElement.TitleWidth="65"
                     Command="{Binding SearchCommand}"
                     Style="{StaticResource SearchBarExtend}"
-                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                    TextElement.Foreground="{DynamicResource TextPrimaryBrush}" />
 
                 <!--  状态筛选  -->
                 <Grid Grid.Column="1" Margin="0,0,10,0">
