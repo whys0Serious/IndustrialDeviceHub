@@ -41,8 +41,8 @@ namespace DeviceHub.Client.ViewModels
             _categoryService = categoryService;
             _dialogService = dialogService;
 
-            StatusOptions = DeviceStatusOption.AllOptions;
-            SelectedStatus = DeviceStatusOption.All;
+            StatusOptions = DeviceStatusModel.AllOptions;
+            SelectedStatus = DeviceStatusModel.All;
         }
 
         /// <summary>
@@ -53,12 +53,12 @@ namespace DeviceHub.Client.ViewModels
         private string? _searchKeyword;
 
         [ObservableProperty]
-        private DeviceStatusOption? _selectedStatus;
+        private DeviceStatusModel? _selectedStatus;
 
         [ObservableProperty]
         private DeviceCategoryDto? _selectedCategory;
 
-        public IReadOnlyList<DeviceStatusOption> StatusOptions { get; }
+        public IReadOnlyList<DeviceStatusModel> StatusOptions { get; }
 
         public ObservableCollection<DeviceCategoryDto> CategoryOptions { get; } = new();
 
@@ -143,7 +143,7 @@ namespace DeviceHub.Client.ViewModels
             try
             {
                 SearchKeyword = null;
-                SelectedStatus = DeviceStatusOption.All;
+                SelectedStatus = DeviceStatusModel.All;
                 SelectedCategory = CategoryOptions.FirstOrDefault();
                 CurrentPageIndex = 1;
             }
@@ -336,7 +336,7 @@ namespace DeviceHub.Client.ViewModels
         /// <summary>
         /// 状态变化时自动搜索
         /// </summary>
-        partial void OnSelectedStatusChanged(DeviceStatusOption? value)
+        partial void OnSelectedStatusChanged(DeviceStatusModel? value)
         {
             //防止初始化时触发（CategoryOptions 还没加载）
             if (_isInitializing || _isResetting) return;

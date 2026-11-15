@@ -8,7 +8,7 @@ namespace DeviceHub.Client.Models
     /// <summary>
     /// 状态下拉框选项
     /// </summary>
-    public class DeviceStatusOption
+    public class DeviceStatusModel
     {
         public DeviceStatus Value { get; init; }
         public string Display { get; init; } = string.Empty;
@@ -16,13 +16,13 @@ namespace DeviceHub.Client.Models
         /// <summary>
         /// 全部选项（哨兵值-1，ViewModel判断时当null处理）
         /// </summary>
-        public static DeviceStatusOption All { get; } = new()
+        public static DeviceStatusModel All { get; } = new()
         {
             Value = (DeviceStatus)(-1),
             Display = "全部"
         };
 
-        public static IReadOnlyList<DeviceStatusOption> AllOptions { get; } = new List<DeviceStatusOption>
+        public static IReadOnlyList<DeviceStatusModel> AllOptions { get; } = new List<DeviceStatusModel>
     {
         All,
         new() { Value = DeviceStatus.Stopped, Display = "已停止"},

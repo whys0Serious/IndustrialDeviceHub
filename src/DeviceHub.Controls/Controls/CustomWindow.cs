@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
 
@@ -12,6 +14,16 @@ namespace DeviceHub.Controls.Controls
     /// </summary>
     public class CustomWindow : Window
     {
+        // 引入 Win32 API
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        private const int GWL_STYLE = -16;
+        private const int WS_MINIMIZEBOX = 0x00020000;
+        private const int WS_SYSMENU = 0x00080000;
         static CustomWindow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(
@@ -31,8 +43,41 @@ namespace DeviceHub.Controls.Controls
 
             DataContextChanged += OnDataContextChanged;
             Closed += OnWindowClosed;
-        }
 
+            WindowStyle = WindowStyle.None;
+            ResizeMode = ResizeMode.NoResize;
+            AllowsTransparency = false;
+            SetResourceReference(BackgroundProperty, "BackgroundBrush");
+            ApplyMainWindowChrome();
+            DataContextChanged += OnDataContextChanged;
+            Closed += OnWindowClosed;
+
+            //核心：在窗口句柄创建后，强行把最小化/系统菜单样式加回去
+            this.SourceInitialized += (s, e) =>
+            {
+                var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+                if (hwnd != IntPtr.Zero)
+                {
+                    // 获取当前窗口样式
+                    int style = GetWindowLong(hwnd, GWL_STYLE);
+                    // 强行加上最小化按钮和系统菜单（这会让系统重新接管任务栏点击逻辑）
+                    style |= WS_MINIMIZEBOX | WS_SYSMENU;
+                    SetWindowLong(hwnd, GWL_STYLE, style);
+                }
+            };
+        }
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            // 确保从最小化恢复时能置顶
+            if (this.WindowState == WindowState.Normal)
+            {
+                this.Topmost = true;
+                this.Topmost = false;
+                this.Activate();
+            }
+        }
         // IsDialog：区分主窗体 / 弹窗
         public static readonly DependencyProperty IsDialogProperty =
             DependencyProperty.Register(nameof(IsDialog), typeof(bool),

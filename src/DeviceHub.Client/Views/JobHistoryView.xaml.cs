@@ -29,6 +29,24 @@ namespace DeviceHub.Client.Views
                     await vm.InitializeAsync();
                 }
             };
+            this.Loaded += (s, e) =>
+            {
+                if (DataContext is JobHistoryViewModel vm)
+                {
+                    // 监听翻页或刷新动作
+                    vm.PropertyChanged += (sender, args) =>
+                    {
+                        if (args.PropertyName == nameof(vm.CurrentPageIndex))
+                        {
+                            //每次页码变化，强制重置表头复选框
+                            if (HistoryGrid.Columns.Count > 0 && HistoryGrid.Columns[0].Header is CheckBox cb)
+                            {
+                                cb.IsChecked = false;
+                            }
+                        }
+                    };
+                }
+            };
         }
     }
 }

@@ -24,7 +24,7 @@ namespace DeviceHub.Client.ViewModels
             _deviceService = deviceService;
             _categoryService = categoryService;
 
-            StatusOptions = DeviceStatusOption.AllOptions
+            StatusOptions = DeviceStatusModel.AllOptions
                 .Where(o => o.Value != (Core.Enums.DeviceStatus)(-1))
                 .ToList();
         }
@@ -52,7 +52,7 @@ namespace DeviceHub.Client.ViewModels
         private string _code = string.Empty;
 
         [ObservableProperty]
-        private DeviceStatusOption? _selectedStatus;
+        private DeviceStatusModel? _selectedStatus;
 
         [ObservableProperty]
         private DeviceCategoryDto? _selectedCategory;
@@ -60,7 +60,7 @@ namespace DeviceHub.Client.ViewModels
         [ObservableProperty]
         private string? _remark;
 
-        public IReadOnlyList<DeviceStatusOption> StatusOptions { get; }
+        public IReadOnlyList<DeviceStatusModel> StatusOptions { get; }
 
         public ObservableCollection<DeviceCategoryDto> CategoryOptions { get; } = new();
 

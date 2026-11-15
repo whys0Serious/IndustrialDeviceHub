@@ -54,6 +54,13 @@
             <DataTemplate DataType="{x:Type vm:JobHistoryViewModel}">
                 <views:JobHistoryView />
             </DataTemplate>
+            <!--  全局通用的多选列样式  -->
+            <DataTemplate x:Key="SelectAllHeaderTemplate">
+                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsAllSelected, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay}" />
+            </DataTemplate>
+            <DataTemplate x:Key="SelectRowTemplate">
+                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

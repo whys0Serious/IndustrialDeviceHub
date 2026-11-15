@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeviceHub.Client.Attributes;
+using DeviceHub.Client.Models;
 using DeviceHub.Core.Entities;
 using DeviceHub.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,7 @@ namespace DeviceHub.Client.ViewModels
         /// <summary>
         /// 作业历史记录列表
         /// </summary>
-        public ObservableCollection<JobRecord> JobRecords { get; } = new();
+        public ObservableCollection<JobRecordUiModel> JobRecords { get; } = new();
 
         // 分页控制属性
         [ObservableProperty] private int _currentPageIndex = 1;
@@ -40,13 +41,15 @@ namespace DeviceHub.Client.ViewModels
         /// 当前选中的作业记录
         /// </summary>
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ExportReportCommand))]
         private JobRecord? _selectedJob;
 
-        /// 是否选中了记录（用于控制导出按钮状态）
-        public bool IsRecordSelected => SelectedJob != null;
+
         public bool HasData => JobRecords.Count > 0;
-        public JobHistoryViewModel(IJobExecutionService jobService) => _jobService = jobService;
+        public JobHistoryViewModel(IJobExecutionService jobService) 
+        {
+
+            _jobService = jobService;
+        } 
 
         public async Task InitializeAsync()
         {
@@ -87,7 +90,7 @@ namespace DeviceHub.Client.ViewModels
                 var result = await _jobService.GetJobHistoryAsync(1, CurrentPageIndex, PageSize);
 
                 JobRecords.Clear();
-                foreach (var r in result.Items) JobRecords.Add(r);
+                foreach (var r in result.Items) JobRecords.Add(new JobRecordUiModel(r));
 
                 TotalCount = result.TotalCount;
                 TotalPages = result.TotalPages;
@@ -109,48 +112,61 @@ namespace DeviceHub.Client.ViewModels
         /// <summary>
         /// 导出/打印工艺流转卡
         /// </summary>
-        [RelayCommand(CanExecute = nameof(IsRecordSelected))]
+        [RelayCommand]
         private void ExportReport()
         {
-            if (SelectedJob == null) return;
+            // 找出所有被勾选的记录
+            var selectedList = JobRecords.Where(r => r.IsSelected).ToList();
+            if (selectedList.Count == 0) return;
+
+            //if (SelectedJob == null) return;
 
             //生成工业流转文本
             var report = new System.Text.StringBuilder();
             report.AppendLine("====================================");
             report.AppendLine("      整机作业工艺流转卡");
             report.AppendLine("====================================");
-            report.AppendLine($"作业流水号：{SelectedJob.JobNo}");
-            report.AppendLine($"设备编号：{SelectedJob.DeviceId}");
-            report.AppendLine($"执行配方：{SelectedJob.RecipeName}");
-            report.AppendLine($"开机时间：{SelectedJob.StartTime:yyyy-MM-dd HH:mm:ss}");
-            report.AppendLine($"停机时间：{SelectedJob.EndTime:yyyy-MM-dd HH:mm:ss}");
-            report.AppendLine("------------------------------------");
-
-            report.AppendLine("【工艺设定值】");
-            report.AppendLine($"温度：{SelectedJob.TargetTemp} ℃ | 压力：{SelectedJob.TargetPress} kPa | 转速：{SelectedJob.TargetSpeed} RPM");
-            report.AppendLine("------------------------------------");
-
-            report.AppendLine("【设备实际运行反馈】");
-            report.AppendLine($"温度 -> 均温：{SelectedJob.AvgTemp:F1} ℃ | 最高：{SelectedJob.MaxTemp:F1} ℃");
-            report.AppendLine($"压力 -> 均值：{SelectedJob.AvgPress} kPa | 最高：{SelectedJob.MaxPress} kPa");
-            report.AppendLine($"转速 -> 均速：{SelectedJob.AvgSpeed:F0} RPM | 最高：{SelectedJob.MaxSpeed} RPM");
-            report.AppendLine("------------------------------------");
-
-            report.AppendLine($"质检结论：{(SelectedJob.IsQualified ? "✅ 合格 (PASS)" : "❌ 不合格 (FAIL)")}");
-            if (!SelectedJob.IsQualified)
+            foreach (var uijob in selectedList)
             {
-                report.AppendLine($"异常原因：{SelectedJob.ExceptionReason}");
+                var job = uijob.Record;
+                report.AppendLine($"作业流水号：{job.JobNo}");
+                report.AppendLine($"设备编号：{job.DeviceId}");
+                report.AppendLine($"执行配方：{job.RecipeName}");
+                report.AppendLine($"开机时间：{job.StartTime:yyyy-MM-dd HH:mm:ss}");
+                report.AppendLine($"停机时间：{job.EndTime:yyyy-MM-dd HH:mm:ss}");
+                report.AppendLine("------------------------------------");
+
+                report.AppendLine("【工艺设定值】");
+                report.AppendLine($"温度：{job.TargetTemp} ℃ | 压力：{job.TargetPress} kPa | 转速：{job.TargetSpeed} RPM");
+                report.AppendLine("------------------------------------");
+
+                report.AppendLine("【设备实际运行反馈】");
+                report.AppendLine($"温度 -> 均温：{job.AvgTemp:F1} ℃ | 最高：{job.MaxTemp:F1} ℃");
+                report.AppendLine($"压力 -> 均值：{job.AvgPress} kPa | 最高：{job.MaxPress} kPa");
+                report.AppendLine($"转速 -> 均速：{job.AvgSpeed:F0} RPM | 最高：{job.MaxSpeed} RPM");
+                report.AppendLine("------------------------------------");
+
+                report.AppendLine($"质检结论：{(job.IsQualified ? "✅ 合格 (PASS)" : "❌ 不合格 (FAIL)")}");
+                report.AppendLine("------------------------------------");
+                if (!job.IsQualified)
+                {
+                    report.AppendLine($"异常原因：{SelectedJob.ExceptionReason}");
+                }
             }
             report.AppendLine("====================================");
             report.AppendLine("操作员签字：__________   质检员签字：__________");
 
             // 保存至桌面
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var filePath = System.IO.Path.Combine(desktopPath, $"{SelectedJob.JobNo}_工艺.txt");
+            var filePath = System.IO.Path.Combine(desktopPath, $"批量履历_{DateTime.Now:yyyyMMddHHmmss}.txt");
             System.IO.File.WriteAllText(filePath, report.ToString());
 
             System.Windows.MessageBox.Show($"已生成至桌面：\n{filePath}", "导出成功",
                 System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+        }
+        private bool CanExportReport()
+        {
+            return JobRecords.Any(r => r.IsSelected);
         }
     }
 }

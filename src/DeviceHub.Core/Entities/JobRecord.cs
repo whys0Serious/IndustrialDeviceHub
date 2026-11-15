@@ -1,4 +1,5 @@
 ﻿namespace DeviceHub.Core.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>
 /// 整机作业执行记录
